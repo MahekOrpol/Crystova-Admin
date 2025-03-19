@@ -11,9 +11,9 @@ export const removeProducts = createAsyncThunk(
   'eCommerceApp/products/removeProducts',
   async (productIds, { dispatch, getState }) => {
     if (Array.isArray(productIds)) {
-      // Multi delete API call
-      await axios.post('http://localhost:3000/api/v1/product/multi-delete', {
-        ids: productIds,
+      // Multi delete API call with JSON body
+      await axios.delete('http://localhost:3000/api/v1/product/multi-delete', {
+        data: { ids: productIds }
       });
     } else {
       // Single delete API call
@@ -22,6 +22,7 @@ export const removeProducts = createAsyncThunk(
     return productIds;
   }
 );
+
 
 
 const productsAdapter = createEntityAdapter({});

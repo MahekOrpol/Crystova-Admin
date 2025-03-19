@@ -15,7 +15,7 @@ function ProductHeader(props) {
   const { formState, watch, getValues } = methods;
   const { isValid, dirtyFields } = formState;
   const featuredImageId = watch("featuredImageId");
-  const images = watch("images");
+  const images = watch("images") || [];
   const name = watch("name");
   const theme = useTheme();
   const navigate = useNavigate();

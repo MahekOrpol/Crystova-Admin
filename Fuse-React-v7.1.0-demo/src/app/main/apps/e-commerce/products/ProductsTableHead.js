@@ -39,6 +39,13 @@ const rows = [
     sort: true,
   },
   {
+    id: ' gender',
+    align: 'left',
+    disablePadding: false,
+    label: 'Gender',
+    sort: true,
+  },
+  {
     id: 'priceTaxIncl',
     align: 'right',
     disablePadding: false,

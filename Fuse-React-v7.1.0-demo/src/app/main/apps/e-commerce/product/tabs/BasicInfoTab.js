@@ -8,15 +8,6 @@ function BasicInfoTab(props) {
   const { control, formState } = methods;
   const { errors } = formState;
 
-  const { productId } = useParams();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (productId) {
-      dispatch(getProduct({ productId }));
-    }
-  }, [dispatch, productId]);
-
   return (
     <div>
       <Controller

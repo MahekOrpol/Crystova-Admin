@@ -158,6 +158,25 @@ function InventoryTab(props) {
           </FormControl>
         )}
       />
+       <Controller
+        name="gender"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <FormControl fullWidth className="mt-8 mb-16">
+            <InputLabel id="gender-label">Gender</InputLabel>
+            <Select
+              {...field}
+              labelId="gender-label"
+              id="gender"
+              label="gender"
+            >
+              <MenuItem value="Men">Men</MenuItem>
+              <MenuItem value="Women">Women</MenuItem>
+            </Select>
+          </FormControl>
+        )}
+      />
       {/* <Controller
   name="stock"
   control={control}

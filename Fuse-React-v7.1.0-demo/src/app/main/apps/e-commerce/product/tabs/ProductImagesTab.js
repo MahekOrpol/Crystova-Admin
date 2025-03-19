@@ -76,7 +76,9 @@ function ProductImagesTab(props) {
                       reader.onload = () => {
                         resolve({
                           id: FuseUtils.generateGUID(),
-                          url: `data:${file.type};base64,${btoa(reader.result)}`,
+                          // url: `data:${file.type};base64,${btoa(reader.result)}`,
+                          url: URL.createObjectURL(file),
+                          file: file,
                           type: 'image',
                         });
                       };

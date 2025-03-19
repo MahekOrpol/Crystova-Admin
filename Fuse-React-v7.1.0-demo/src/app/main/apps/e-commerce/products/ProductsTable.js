@@ -232,6 +232,13 @@ function ProductsTable(props) {
                     >
                       {n.categoryName}
                     </TableCell>
+                    <TableCell
+                      className="p-4 md:p-16 truncate"
+                      component="th"
+                      scope="row"
+                    >
+                      {n.gender}
+                    </TableCell>
 
                     <TableCell
                       className="p-4 md:p-16"
