@@ -61,93 +61,94 @@ export const removeProduct = createAsyncThunk(
   }
 );
 
-export const saveProduct = createAsyncThunk(
-  "eCommerceApp/product/saveProduct",
-  async (productData, { dispatch, getState }) => {
-    const { product } = getState().eCommerceApp;
-
-    const apiData = {
-      categoryName: Array.isArray(productData.categoryName)
-        ? productData.categoryName.join(",")
-        : productData.categoryName,
-      productName: productData.productName,
-      productsDescription: productData.productsDescription,
-      regularPrice: productData.priceTaxIncl,
-      salePrice: productData.taxRate,
-      stock: productData.stock,
-      discount: productData.disRate,
-      productSize: Array.isArray(productData.productSize)
-      ? productData.productSize.join(",")
-      : productData.productSize,
-      sku: productData.sku,
-      quantity: productData.quantity,
-      // image: productData.images,
-      // featuredImageId: productData.featuredImageId, // ✅ Optional, based on backend
-
-      // image: productData.image?.[0]?.url || "", // Pick first uploaded image or handle array
-    };
-    const response = await axios.post(
-      "http://localhost:3000/api/v1/product/create",
-      apiData,
-      {
-        ...product,
-        ...productData,
-      }
-    );
-    const data = await response.data;
-
-    return data;
-
-  }
-);
-
 // export const saveProduct = createAsyncThunk(
 //   "eCommerceApp/product/saveProduct",
 //   async (productData, { dispatch, getState }) => {
 //     const { product } = getState().eCommerceApp;
 
-//     const formData = new FormData();
-//     formData.append(
-//       "categoryName",
-//       Array.isArray(productData.categoryName)
+//     const apiData = {
+//       categoryName: Array.isArray(productData.categoryName)
 //         ? productData.categoryName.join(",")
-//         : productData.categoryName
-//     );
-//     formData.append("productName", productData.productName);
-//     formData.append("productsDescription", productData.productsDescription);
-//     formData.append("regularPrice", productData.priceTaxIncl);
-//     formData.append("salePrice", productData.taxRate);
-//     formData.append("stock", productData.stock);
-//     formData.append("gender", productData.gender);
-//     formData.append("discount", productData.disRate);
-//     formData.append(
-//       "productSize",
-//       productData.Array.isArray(productData.productSize)
-//         ? productData.productSize.join(",")
-//         : productData.productSize
-//     );
-//     formData.append("sku", productData.sku);
-//     formData.append("quantity", productData.quantity);
+//         : productData.categoryName,
+//       productName: productData.productName,
+//       productsDescription: productData.productsDescription,
+//       regularPrice: productData.priceTaxIncl,
+//       salePrice: productData.taxRate,
+//       stock: productData.stock,
+//       discount: productData.disRate,
+//       productSize: Array.isArray(productData.productSize)
+//       ? productData.productSize.join(",")
+//       : productData.productSize,
+//       sku: productData.sku,
+//       quantity: productData.quantity,
+//       // image: productData.images,
+//       // featuredImageId: productData.featuredImageId, // ✅ Optional, based on backend
 
-//     // Append each image file
-//     productData.images?.forEach((img) => {
-//       formData.append("image", img.file); // You need to store 'file' reference
-//     });
-
+//       // image: productData.image?.[0]?.url || "", // Pick first uploaded image or handle array
+//     };
 //     const response = await axios.post(
 //       "http://localhost:3000/api/v1/product/create",
-//       formData,
+//       apiData,
 //       {
 //         ...product,
-//         headers: { "Content-Type": "multipart/form-data" },
+//         ...productData,
 //       }
 //     );
-
 //     const data = await response.data;
 
 //     return data;
+
 //   }
 // );
+
+export const saveProduct = createAsyncThunk(
+  "eCommerceApp/product/saveProduct",
+  async (productData, { dispatch, getState }) => {
+    const { product } = getState().eCommerceApp;
+
+    const formData = new FormData();
+    formData.append(
+      "categoryName",
+      Array.isArray(productData.categoryName)
+        ? productData.categoryName.join(",")
+        : productData.categoryName
+    );
+    formData.append("productName", productData.productName);
+    formData.append("productsDescription", productData.productsDescription);
+    formData.append("regularPrice", productData.priceTaxIncl);
+    formData.append("salePrice", productData.taxRate);
+    formData.append("stock", productData.stock);
+    formData.append("gender", productData.gender);
+    formData.append("discount", productData.disRate);
+    formData.append(
+      "productSize",
+      Array.isArray(productData.productSize)
+        ? productData.productSize.join(",")
+        : productData.productSize
+    );
+    
+    formData.append("sku", productData.sku);
+    formData.append("quantity", productData.quantity);
+
+    // Append each image file
+    productData.images?.forEach((img) => {
+      formData.append("image", img.file); // Assuming you have img.file as the File object
+    });
+
+    const response = await axios.post(
+      "http://localhost:3000/api/v1/product/create",
+      formData,
+      {
+        ...product,
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    const data = await response.data;
+
+    return data;
+  }
+);
 
 const productSlice = createSlice({
   name: "eCommerceApp/product",
