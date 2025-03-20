@@ -1,56 +1,54 @@
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Button from '@mui/material/Button';
-import Icon from '@mui/material/Icon';
-import Input from '@mui/material/Input';
-import Paper from '@mui/material/Paper';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
+import FuseHighlight from "@fuse/core/FuseHighlight";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Icon from "@mui/material/Icon";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function IconsUI() {
-  const theme = useTheme();
-  const [searchText, setSearchText] = useState('');
-  const [data, setData] = useState(null);
-  const [filteredData, setFilteredData] = useState(null);
+  const [user, setUser] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const getUser = async () => {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/admin/get"
+    );
+    setUser(response.data);
+  };
 
   useEffect(() => {
-    axios.get('/api/icons').then((res) => {
-      setData(res.data);
-    });
+    getUser();
   }, []);
 
-  useEffect(() => {
-    setFilteredData(
-      searchText.length > 0
-        ? data.filter((item) => {
-            if (item.name.includes(searchText)) {
-              return true;
-            }
-
-            // eslint-disable-next-line no-unused-vars
-            for (let i = 0; i < item.tags.length; i += 1) {
-              const tag = item.tags[i];
-              if (tag.includes(searchText)) {
-                return true;
-              }
-            }
-            return false;
-          })
-        : data
-    );
-  }, [data, searchText]);
-
-  function handleSearch(event) {
-    setSearchText(event.target.value);
+  function handleChangePage(event, value) {
+    setPage(value);
   }
 
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }
+  
   return (
     <FusePageSimple
       header={
-        <div className="flex flex-wrap flex-1 items-center justify-between p-12 md:p-24">
-          <div className="flex flex-col w-full sm:w-auto">
-            <div className="flex items-center mb-4">
+        <div className="flex flex-1 items-center justify-between p-12 md:p-24">
+          <div className="flex flex-col">
+            <div className="flex items-center mb-16">
               <Icon className="text-18" color="action">
                 home
               </Icon>
@@ -58,82 +56,71 @@ function IconsUI() {
                 chevron_right
               </Icon>
               <Typography color="textSecondary" className="font-medium">
-                User Interface
+                Admin Interface
               </Typography>
             </div>
-            <Typography variant="h6" className="text-18 sm:text-24 font-semibold">
-              Icons
+            <Typography
+              variant="h6"
+              className="text-18 sm:text-24 font-semibold"
+            >
+              Admin 
             </Typography>
           </div>
-
-          <div className="flex flex-1 items-center justify-center w-full sm:w-auto sm:px-12">
-            <ThemeProvider theme={theme}>
-              <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 rounded-16 shdaow">
-                <Icon color="action">search</Icon>
-
-                {useMemo(
-                  () => (
-                    <Input
-                      placeholder="Search..."
-                      className="flex flex-1 px-8"
-                      disableUnderline
-                      fullWidth
-                      value={searchText}
-                      onChange={handleSearch}
-                      inputProps={{
-                        'aria-label': 'Search',
-                      }}
-                    />
-                  ),
-                  [searchText]
-                )}
-              </Paper>
-            </ThemeProvider>
-          </div>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            component="a"
-            href="https://material.io/icons/"
-            target="_blank"
-            role="button"
-          >
-            <Icon>link</Icon>
-            <span className="mx-4 hidden sm:flex">Reference</span>
-          </Button>
         </div>
       }
       content={
-        <div className="py-24 max-w-2xl mx-auto">
-          {useMemo(
-            () =>
-              filteredData &&
-              (filteredData.length > 0 ? (
-                <div className="flex flex-wrap justify-center">
-                  {filteredData.map((item) => (
-                    <div
-                      className="w-1/3 h-128 p-8 sm:w-160 sm:p-16 flex flex-col items-center justify-center"
-                      key={item.name}
-                    >
-                      <Icon className="text-48" color="action">
-                        {item.name}
-                      </Icon>
-                      <Typography variant="caption" className="mt-4">
-                        {item.name}
-                      </Typography>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-auto items-center justify-center w-full h-full">
-                  <Typography color="textSecondary" variant="h5">
-                    No results!
-                  </Typography>
-                </div>
-              )),
-            [filteredData]
-          )}
+        <div className="p-24">
+          <Card>
+            <CardContent>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>NO.</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Ceated</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {user
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow key={row.id}>
+                        <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.email}</TableCell>
+                        <TableCell>
+                          {new Date(row.createdAt).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <TablePagination
+            className="shrink-0 border-t-1"
+            component="div"
+            count={user.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              "aria-label": "Previous Page",
+            }}
+            nextIconButtonProps={{
+              "aria-label": "Next Page",
+            }}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
       }
     />

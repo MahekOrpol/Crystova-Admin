@@ -1,12 +1,48 @@
-import FuseHighlight from '@fuse/core/FuseHighlight';
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Icon from '@mui/material/Icon';
-import Typography from '@mui/material/Typography';
+import FuseHighlight from "@fuse/core/FuseHighlight";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Icon from "@mui/material/Icon";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function TypographyUI() {
+  const [user, setUser] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const getUser = async () => {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/register/get"
+    );
+    setUser(response.data);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  function handleChangePage(event, value) {
+    setPage(value);
+  }
+
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }
+  
   return (
     <FusePageSimple
       header={
@@ -23,179 +59,70 @@ function TypographyUI() {
                 User Interface
               </Typography>
             </div>
-            <Typography variant="h6" className="text-18 sm:text-24 font-semibold">
-              Typography
+            <Typography
+              variant="h6"
+              className="text-18 sm:text-24 font-semibold"
+            >
+              Users
             </Typography>
           </div>
-
-          <Button
-            variant="contained"
-            color="secondary"
-            component="a"
-            href="https://mui.com/components/typography"
-            target="_blank"
-            role="button"
-          >
-            <Icon>link</Icon>
-            <span className="mx-4 hidden sm:flex">Reference</span>
-          </Button>
         </div>
       }
       content={
-        <div className="p-12 md:p-24 max-w-2xl">
-          <Card className="shadow">
+        <div className="p-24">
+          <Card>
             <CardContent>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h1">Display 4</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography variant="h1">Display 4</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h2">Display 3</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography variant="h2">Display 3</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h3">Display 2</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography variant="h3">Display 2</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h4">Display 1</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography variant="h4">Display 1</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h5">Headline</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                          <Typography variant="h5">Headline</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="h6">Title</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography variant="h6">Title</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="subtitle1">Subheading</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                             <Typography variant="subtitle1">Subheading</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="body1">Body 2</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                            <Typography variant="body1">Body 2</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="body2">Body 1</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                            <Typography variant="body2">Body 1</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="caption">Caption</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                            <Typography variant="caption">Caption</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography gutterBottom noWrap>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua.
-                  </Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                           <Typography noWrap>
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                                            </Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
-              <div className="flex flex-wrap mb-16">
-                <div className="flex w-full sm:w-1/2">
-                  <Typography variant="button">Button</Typography>
-                </div>
-                <div className="flex w-full sm:w-1/2">
-                  <FuseHighlight component="pre" className="language-html w-full">
-                    {`
-                                             <Typography variant="button">Button</Typography>
-                                        `}
-                  </FuseHighlight>
-                </div>
-              </div>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>NO.</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Contact</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Ceated</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {user
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow key={row.id}>
+                        <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.phone}</TableCell>
+                        <TableCell>{row.email}</TableCell>
+                        <TableCell>
+                          {new Date(row.createdAt).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
+          <TablePagination
+            className="shrink-0 border-t-1"
+            component="div"
+            count={user.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              "aria-label": "Previous Page",
+            }}
+            nextIconButtonProps={{
+              "aria-label": "Next Page",
+            }}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </div>
       }
     />

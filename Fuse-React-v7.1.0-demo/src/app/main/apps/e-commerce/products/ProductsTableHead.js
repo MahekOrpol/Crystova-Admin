@@ -53,14 +53,14 @@ const rows = [
     sort: true,
   },
   {
-    id: 'priceTaxIncl',
+    id: 'salePriceTaxIncl',
     align: 'right',
     disablePadding: false,
     label: 'Sale Price',
     sort: true,
   },
   {
-    id: 'discount',
+    id: 'disRate',
     align: 'right',
     disablePadding: false,
     label: 'Discount',

@@ -1,10 +1,12 @@
 import { authRoles } from 'app/auth';
 import i18next from 'i18next';
 import DocumentationNavigation from '../main/documentation/DocumentationNavigation';
+import { ImUsers } from "react-icons/im";
 
 import ar from './navigation-i18n/ar';
 import en from './navigation-i18n/en';
 import tr from './navigation-i18n/tr';
+import { FaUsers } from "react-icons/fa";
 
 i18next.addResourceBundle('en', 'navigation', en);
 i18next.addResourceBundle('tr', 'navigation', tr);
@@ -392,17 +394,17 @@ const navigationConfig = [
     children: [
       {
         id: 'icons',
-        title: 'Icons',
+        title: 'Admin User',
         type: 'item',
-        icon: 'photo',
-        url: 'ui/icons',
+        icon: <ImUsers />,
+        url: 'ui/admin-user',
       },
       {
         id: 'ui-typography',
-        title: 'Typography',
+        title: 'Users',
         type: 'item',
-        icon: 'text_fields',
-        url: 'ui/typography',
+        icon: <FaUsers /> ,
+        url: 'ui/users',
       },
       {
         id: 'helper-classes',

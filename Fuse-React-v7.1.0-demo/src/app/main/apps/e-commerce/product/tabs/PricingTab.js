@@ -48,14 +48,14 @@ function PricingTab(props) {
       />
 
       <Controller
-        name="taxRate"
+        name="salePriceTaxIncl"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             className="mt-8 mb-16"
             label="Sale Price"
-            id="taxRate"
+            id="salePriceTaxIncl"
             InputProps={{
               startAdornment: <InputAdornment position="start">$</InputAdornment>,
             }}

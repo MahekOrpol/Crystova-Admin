@@ -30,7 +30,7 @@ export const getProduct = createAsyncThunk(
     const productId = params?.["*"];
     console.log("getProduct params :>> ", productId);
     const response = await axios.get(
-      `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+      // `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
     );
     const data = await response.data;
     return data === undefined ? null : data;
@@ -61,46 +61,6 @@ export const removeProduct = createAsyncThunk(
   }
 );
 
-// export const saveProduct = createAsyncThunk(
-//   "eCommerceApp/product/saveProduct",
-//   async (productData, { dispatch, getState }) => {
-//     const { product } = getState().eCommerceApp;
-
-//     const apiData = {
-//       categoryName: Array.isArray(productData.categoryName)
-//         ? productData.categoryName.join(",")
-//         : productData.categoryName,
-//       productName: productData.productName,
-//       productsDescription: productData.productsDescription,
-//       regularPrice: productData.priceTaxIncl,
-//       salePrice: productData.taxRate,
-//       stock: productData.stock,
-//       discount: productData.disRate,
-//       productSize: Array.isArray(productData.productSize)
-//       ? productData.productSize.join(",")
-//       : productData.productSize,
-//       sku: productData.sku,
-//       quantity: productData.quantity,
-//       // image: productData.images,
-//       // featuredImageId: productData.featuredImageId, // ✅ Optional, based on backend
-
-//       // image: productData.image?.[0]?.url || "", // Pick first uploaded image or handle array
-//     };
-//     const response = await axios.post(
-//       "http://localhost:3000/api/v1/product/create",
-//       apiData,
-//       {
-//         ...product,
-//         ...productData,
-//       }
-//     );
-//     const data = await response.data;
-
-//     return data;
-
-//   }
-// );
-
 export const saveProduct = createAsyncThunk(
   "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
@@ -110,13 +70,14 @@ export const saveProduct = createAsyncThunk(
     formData.append(
       "categoryName",
       Array.isArray(productData.categoryName)
-        ? productData.categoryName.join(",")
+        ? productData.categoryName.map((cat) => cat.categoryName).join(",")
         : productData.categoryName
     );
+    
     formData.append("productName", productData.productName);
     formData.append("productsDescription", productData.productsDescription);
     formData.append("regularPrice", productData.priceTaxIncl);
-    formData.append("salePrice", productData.taxRate);
+    formData.append("salePrice", productData.salePriceTaxIncl);
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);

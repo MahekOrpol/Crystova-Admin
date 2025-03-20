@@ -16,11 +16,11 @@ const UserInterfaceConfig = {
       element: <Blank />,
     },
     {
-      path: 'ui/icons',
+      path: 'ui/admin-user',
       element: <IconsUI />,
     },
     {
-      path: 'ui/typography',
+      path: 'ui/users',
       element: <TypographyUI />,
     },
     {

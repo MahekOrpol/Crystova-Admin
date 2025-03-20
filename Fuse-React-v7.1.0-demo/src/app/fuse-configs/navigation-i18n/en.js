@@ -3,6 +3,7 @@ const locale = {
   DASHBOARDS: 'Dashboards',
   CALENDAR: 'Calendar',
   ECOMMERCE: 'E-Commerce',
+  User: 'User',
   ACADEMY: 'Academy',
   MAIL: 'Mail',
   TODO: 'To-Do',

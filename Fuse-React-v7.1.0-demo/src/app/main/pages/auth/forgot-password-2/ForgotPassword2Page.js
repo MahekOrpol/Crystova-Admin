@@ -50,16 +50,16 @@ function ForgotPassword2Page() {
         >
           <Typography className="text-32 sm:text-44 font-semibold leading-tight">
             Welcome <br />
-            to the <br /> FUSE React!
+            to the <br /> Crystova Admin!
           </Typography>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
+        {/* <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.3 } }}>
           <Typography variant="subtitle1" className="mt-32 font-medium">
             Powerful and professional admin template for Web Applications, CRM, CMS, Admin Panels
             and more.
           </Typography>
-        </motion.div>
+        </motion.div> */}
       </div>
 
       <Card

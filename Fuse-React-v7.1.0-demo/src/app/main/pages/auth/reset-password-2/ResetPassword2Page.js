@@ -57,7 +57,7 @@ function ResetPasswordPage2() {
         >
           <Typography className="text-32 sm:text-44 font-semibold leading-tight">
             Welcome <br />
-            to the <br /> FUSE React!
+            to the <br /> Welcome to The Crystova Admin!
           </Typography>
         </motion.div>
 

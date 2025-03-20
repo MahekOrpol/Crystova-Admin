@@ -1,12 +1,26 @@
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import { useFormContext, Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { useFormContext, Controller } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function BasicInfoTab(props) {
   const methods = useFormContext();
   const { control, formState } = methods;
   const { errors } = formState;
+  const [categories, setCategories] = useState();
+
+  const getCateories = async () => {
+    const response = await axios.get(
+      "http://localhost:3000/api/v1/category/get"
+    );
+    setCategories(response.data);
+  };
+
+  useEffect(() => {
+    getCateories();
+  }, []);
 
   return (
     <div>
@@ -47,7 +61,7 @@ function BasicInfoTab(props) {
         )}
       />
 
-      <Controller
+      {/* <Controller
         name="categoryName"
         control={control}
         defaultValue={[]}
@@ -57,6 +71,35 @@ function BasicInfoTab(props) {
             multiple
             freeSolo
             options={[]}
+            value={value}
+            onChange={(event, newValue) => {
+              onChange(newValue);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Select multiple categories"
+                label="Category Name"
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            )}
+          />
+        )}
+      /> */}
+
+      <Controller
+        name="categoryName"
+        control={control}
+        defaultValue={[]}
+        render={({ field: { onChange, value } }) => (
+          <Autocomplete
+            className="mt-8 mb-16"
+            multiple
+            options={categories || []} // Use fetched categories
+            getOptionLabel={(option) => option.categoryName || option} // Adjust label
             value={value}
             onChange={(event, newValue) => {
               onChange(newValue);
@@ -109,5 +152,3 @@ function BasicInfoTab(props) {
 }
 
 export default BasicInfoTab;
-
-
