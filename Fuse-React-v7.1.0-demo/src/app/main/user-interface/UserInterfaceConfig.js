@@ -16,15 +16,15 @@ const UserInterfaceConfig = {
       element: <Blank />,
     },
     {
-      path: 'ui/admin-user',
+      path: 'admin-user',
       element: <IconsUI />,
     },
     {
-      path: 'ui/users',
+      path: 'users',
       element: <TypographyUI />,
     },
     {
-      path: 'ui/helper-classes',
+      path: 'product/wishlist',
       element: <HelperClassesUI />,
     },
   ],

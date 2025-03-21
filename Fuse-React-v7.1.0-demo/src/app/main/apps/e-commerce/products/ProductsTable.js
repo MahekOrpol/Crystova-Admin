@@ -201,7 +201,7 @@ function ProductsTable(props) {
                       className="w-full block rounded"
                       src={
                         n.image
-                          ? `http://localhost:3000${n.image}`
+                          ? `https://crystova.cloudbusiness.cloud${n.image}`
                           : placeholderImg
                       }
                       alt={n.productName}
@@ -210,7 +210,7 @@ function ProductsTable(props) {
                         className="w-full block rounded"
                         src={
                           n.image && n.image.length > 0
-                            ? `http://localhost:3000${n.image[0]}` // Display first image only
+                            ? `https://crystova.cloudbusiness.cloud${n.image[0]}` // Display first image only
                             : placeholderImg
                         }
                         alt={n.productName}
@@ -246,7 +246,7 @@ function ProductsTable(props) {
                       scope="row"
                       align="right"
                     >
-                      <span>$</span>
+                      <span>₹</span>
                       {n.regularPrice?.$numberDecimal}
                     </TableCell>
 
@@ -256,7 +256,7 @@ function ProductsTable(props) {
                       scope="row"
                       align="right"
                     >
-                      <span>$</span>
+                      <span>₹</span>
                       {n.salePrice?.$numberDecimal}
                     </TableCell>
                     <TableCell

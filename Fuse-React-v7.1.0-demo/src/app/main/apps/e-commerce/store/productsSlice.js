@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 export const getProducts = createAsyncThunk('eCommerceApp/products/getProducts', async () => {
-  const response = await axios.get('http://localhost:3000/api/v1/product/get');
+  const response = await axios.get('https://crystova.cloudbusiness.cloud/api/v1/product/get');
   return response.data;
 });
 
@@ -12,12 +12,12 @@ export const removeProducts = createAsyncThunk(
   async (productIds, { dispatch, getState }) => {
     if (Array.isArray(productIds)) {
       // Multi delete API call with JSON body
-      await axios.delete('http://localhost:3000/api/v1/product/multi-delete', {
+      await axios.delete('https://crystova.cloudbusiness.cloud/api/v1/product/multi-delete', {
         data: { ids: productIds }
       });
     } else {
       // Single delete API call
-      await axios.delete(`http://localhost:3000/api/v1/product/delete/${productIds}`);
+      await axios.delete(`https://crystova.cloudbusiness.cloud/api/v1/product/delete/${productIds}`);
     }
     return productIds;
   }
@@ -40,8 +40,8 @@ const productsSlice = createSlice({
       reducer: (state, action) => {
         state.searchText = action.payload;
       },
-      prepare: (event) => ({ payload: event.target.value || '' }),
-    },
+      prepare: (value) => ({ payload: value || '' }),
+    },    
   },
   extraReducers: {
     [getProducts.fulfilled]: productsAdapter.setAll,

@@ -195,7 +195,7 @@ function OrdersTable(props) {
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      <span>$</span>
+                      <span>₹</span>
                       {n.total}
                     </TableCell>
 

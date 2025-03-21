@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
+import { IoHeartCircle } from "react-icons/io5";
 
 const Root = styled('div')(({ theme }) => ({
   '& .FaqPage-header': {

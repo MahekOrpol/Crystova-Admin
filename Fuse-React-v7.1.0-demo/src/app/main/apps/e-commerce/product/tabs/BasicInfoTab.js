@@ -13,7 +13,7 @@ function BasicInfoTab(props) {
 
   const getCateories = async () => {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/category/get"
+      "https://crystova.cloudbusiness.cloud/api/v1/category/get"
     );
     setCategories(response.data);
   };

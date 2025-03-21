@@ -3,26 +3,6 @@ import axios from "axios";
 import FuseUtils from "@fuse/utils";
 import { useParams } from "react-router-dom";
 
-// export const getProduct = createAsyncThunk(
-//   "eCommerceApp/product/getProduct",
-//   async (params) => {
-//     const response = await axios.get("http://localhost:3000/api/v1/product/getSingleProduct", { params });
-//     const data = await response.data;
-
-//     return data === undefined ? null : data;
-//   }
-// );
-
-// export const getProduct = createAsyncThunk(
-//   "eCommerceApp/product/getProduct",
-//   async (params) => {
-//     console.log('getProduct params :>> ', params);
-//     const productId = params?.productId || params?.['*'];
-//     const response = await axios.get(`http://localhost:3000/api/v1/product/getSingleProduct/${productId}`);
-//     const data = await response.data;
-//     return data === undefined ? null : data;
-//   }
-// );
 
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
@@ -30,26 +10,12 @@ export const getProduct = createAsyncThunk(
     const productId = params?.["*"];
     console.log("getProduct params :>> ", productId);
     const response = await axios.get(
-      // `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+      `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
     );
     const data = await response.data;
     return data === undefined ? null : data;
   }
 );
-
-// export const getProduct = createAsyncThunk(
-//   "eCommerceApp/product/getProduct",
-//   async (params) => {
-//     console.log('data :>> ', params);
-//     // const response = await axios.get(`http://localhost:3000/api/v1/product/getSingleProduct/${params.productId}`);
-//     const response = await axios.get("http://localhost:3000/api/v1/product/getSingleProduct", {
-//       params: { productId: params }
-//     });
-
-//     const data = await response.data;
-//     return data === undefined ? null : data;
-//   }
-// );
 
 export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
@@ -97,7 +63,7 @@ export const saveProduct = createAsyncThunk(
     });
 
     const response = await axios.post(
-      "http://localhost:3000/api/v1/product/create",
+      "https://crystova.cloudbusiness.cloud/api/v1/product/create",
       formData,
       {
         ...product,

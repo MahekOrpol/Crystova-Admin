@@ -1,8 +1,49 @@
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Icon from '@mui/material/Icon';
-import Typography from '@mui/material/Typography';
+import FuseHighlight from "@fuse/core/FuseHighlight";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Icon from "@mui/material/Icon";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function HelperClassesUI() {
+  const [user, setUser] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const getAllWishlist = async () => {
+    const response = await axios.get(
+      "http://crystova.cloudbusiness.cloud/api/v1/wishlist/admin/wishlists"
+    );
+    setUser(response.data.data);
+  };
+
+  useEffect(() => {
+    getAllWishlist();
+  }, []);
+
+  function handleChangePage(event, value) {
+    setPage(value);
+  }
+
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  }
+  const baseURL = "http://crystova.cloudbusiness.cloud";
+
   return (
     <FusePageSimple
       header={
@@ -16,70 +57,113 @@ function HelperClassesUI() {
                 chevron_right
               </Icon>
               <Typography color="textSecondary" className="font-medium">
-                User Interface
+                Admin Interface
               </Typography>
             </div>
-            <Typography variant="h6" className="text-18 sm:text-24 font-semibold">
-              Helper Classes
+            <Typography
+              variant="h6"
+              className="text-18 sm:text-24 font-semibold"
+            >
+              Wdishlist
             </Typography>
           </div>
         </div>
       }
       content={
-        <div className="p-12 md:p-24 max-w-2xl">
-          <div>
-            <Typography className="mb-8" variant="h5">
-              Styling in Material-UI
-            </Typography>
-
-            <Typography className="mb-16" component="p">
-              Fuse React developed based on Material-UI as ui library.
-              <a
-                className="mx-4"
-                href="https://mui.com/system/basics/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Material-UI's styling solution
-              </a>
-              uses emotion at its core. Therefore the Fuse React supports
-              <a
-                className="mx-4"
-                href="http://cssinjs.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Emotion
-              </a>{' '}
-              (Emotion is a library designed for writing css styles with JavaScript)
-            </Typography>
-          </div>
-
-          <div>
-            <Typography className="mt-32 mb-8" variant="h5">
-              Helper Classes with TailwindCSS
-            </Typography>
-
-            <Typography className="mb-16" component="p">
-              We are accepting JSS advantages but we can't leave <b>helper classes</b> for fast
-              development, ease of use, globally access etc. So we have used both in components.
-            </Typography>
-
-            <Typography className="mb-16" component="p">
-              We are using
-              <a
-                className="mx-4"
-                href="https://tailwindcss.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                TailwindCSS
-              </a>
-              as an engine for generating helper classes. It's not an UI kit and it's customizable.
-              You can find the config file of Tailwind with named "<b>tailwind.js</b>" under the
-              root of Fuse React.
-            </Typography>
-          </div>
+        <div className="p-24">
+          <Card>
+            <CardContent>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>Product Name</TableCell>
+                    <TableCell>Categories</TableCell>
+                    <TableCell>Product Price</TableCell>
+                    <TableCell>User Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Ceated</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                {/* {user
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index, array) => (
+                      <TableRow
+                        key={row._id}
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            borderBottom: "none",
+                          },
+                        }}
+                      > */}
+                  {user
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => (
+                      <TableRow key={row.id} >
+                        <TableCell>
+                          {Array.isArray(row?.productId?.image) ? (
+                            <img
+                              // src={row.productId.image[0]}
+                              src={`${baseURL}${row.productId.image[0]}`}
+                              alt="Product"
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <img
+                              src={`${baseURL}${row.productId.image}`}
+                              alt="Product"
+                              style={{
+                                width: "80px",
+                                height: "80px",
+                                objectFit: "cover",
+                              }}
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {row?.productId?.productName || "-"}
+                        </TableCell>
+                        <TableCell>{row?.productId.categoryName}</TableCell>
+                        <TableCell><span>₹</span> {row?.productId.salePrice?.$numberDecimal}</TableCell>
+                        <TableCell>{row?.user?.name}</TableCell>
+                        <TableCell>{row?.user?.email}</TableCell>
+                        <TableCell>
+                          {new Date(row.createdAt).toLocaleString("en-GB", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          <TablePagination
+            className="shrink-0 border-t-1"
+            component="div"
+            count={user.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              "aria-label": "Previous Page",
+            }}
+            nextIconButtonProps={{
+              "aria-label": "Next Page",
+            }}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          </Card>
         </div>
       }
     />
