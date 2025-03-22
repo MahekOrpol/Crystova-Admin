@@ -87,7 +87,7 @@ function IconsUI() {
                     .map((row, index) => (
                       <TableRow key={row.id}>
                         <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                        <TableCell>{row.name}</TableCell>
+                        <TableCell>{row.displayName}</TableCell>
                         <TableCell>{row.email}</TableCell>
                         <TableCell>
                           {new Date(row.createdAt).toLocaleString("en-GB", {

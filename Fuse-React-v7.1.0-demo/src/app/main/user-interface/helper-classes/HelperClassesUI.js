@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 
 function HelperClassesUI() {
   const [user, setUser] = useState([]);
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 

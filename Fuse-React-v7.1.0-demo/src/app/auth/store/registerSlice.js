@@ -4,9 +4,7 @@ import firebaseService from 'app/services/firebaseService';
 import jwtService from 'app/services/jwtService';
 import { createUserSettingsFirebase, setUserData } from './userSlice';
 
-export const submitRegister =
-  ({ displayName, password, email }) =>
-  async (dispatch) => {
+export const submitRegister = ({ displayName, password, email }, navigate) => async (dispatch) => {
     return jwtService
       .createUser({
         displayName,
@@ -14,14 +12,23 @@ export const submitRegister =
         email,
       })
       .then((user) => {
-        dispatch(setUserData(user));
-        return dispatch(registerSuccess());
+        // dispatch(setUserData(user));
+        if (user && user.settings) {
+          dispatch(setUserData(user));
+        } else {
+          console.warn('User settings missing:', user);
+        }
+        
+        dispatch(registerSuccess());
+        dispatch(showMessage({ message: 'Registration Successful!' }));
+        if (navigate) navigate('/login'); // ⬅️ Redirect to /login on success
       })
       .catch((errors) => {
-        return dispatch(registerError(errors));
+        dispatch(registerError(errors));
+        dispatch(showMessage({ message: 'Registration Failed!' }));
       });
   };
-
+  
 export const registerWithFirebase = (model) => async (dispatch) => {
   if (!firebaseService.auth) {
     console.warn("Firebase Service didn't initialize, check your configuration");

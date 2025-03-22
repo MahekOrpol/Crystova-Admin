@@ -19,7 +19,8 @@ import { updateUserShortcuts } from 'app/auth/store/userSlice';
 
 function FuseShortcuts(props) {
   const dispatch = useDispatch();
-  const shortcuts = useSelector(({ auth }) => auth.user.data.shortcuts) || [];
+  const shortcuts = useSelector(({ auth }) => auth.user?.data?.shortcuts) || [];
+
   const navigation = useSelector(selectFlatNavigation);
 
   const searchInputRef = useRef(null);

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { submitRegister } from 'app/auth/store/registerSlice';
 import * as yup from 'yup';
 import _ from '@lodash';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Form Validation Schema
@@ -33,6 +34,7 @@ const defaultValues = {
 function JWTRegisterTab(props) {
   const dispatch = useDispatch();
   const authRegister = useSelector(({ auth }) => auth.register);
+const navigate = useNavigate();
 
   const { control, formState, handleSubmit, reset, setError } = useForm({
     mode: 'onChange',
@@ -51,9 +53,10 @@ function JWTRegisterTab(props) {
     });
   }, [authRegister.errors, setError]);
 
-  function onSubmit(model) {
-    dispatch(submitRegister(model));
-  }
+  const onSubmit = (model) => {
+    dispatch(submitRegister(model, navigate));
+  };
+  
 
   return (
     <div className="w-full">

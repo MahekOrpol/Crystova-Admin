@@ -6,7 +6,7 @@ const LogoutConfig = {
   auth: authRoles.user,
   routes: [
     {
-      path: 'logout',
+      path: '/pages/auth/login',
       element:() => {
         store.dispatch(logoutUser());
         return 'Logging out..';
