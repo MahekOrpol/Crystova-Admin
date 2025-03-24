@@ -73,12 +73,7 @@ const navigationConfig = [
             type: "item",
             url: "apps/e-commerce/products/details",
           },
-          {
-            id: "e-commerce-product-detail-page",
-            title: "Product Detail Page",
-            type: "item",
-            url: "apps/e-commerce/products/details/:id",
-          },
+         
           {
             id: "e-commerce-new-product",
             title: "New Product",

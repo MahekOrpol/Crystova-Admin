@@ -1,10 +1,33 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import { Controller, useFormContext } from 'react-hook-form';
+import { useEffect } from 'react';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 
-function PricingTab(props) {
+function PricingTab({product}) {
   const methods = useFormContext();
-  const { control } = methods;
+  // const { control } = methods;
+  const { control, reset } = useFormContext(); // ✅ Use useFormContext() only if inside FormProvider
+
+  useEffect(() => {
+    if (product) {
+      reset({
+        priceTaxIncl: product?.regularPrice?.$numberDecimal || "",
+        salePriceTaxIncl: product?.salePrice?.$numberDecimal || "",
+        disRate: product?.discount?.$numberDecimal || "",
+      });
+    }
+  }, [product, reset]);
+
+  // useEffect(() => {
+  //   if (product) {
+  //     reset({
+  //       priceTaxIncl: product?.regularPrice?.$numberDecimal || "",
+  //       salePriceTaxIncl: product?.salePrice?.numberDecimal || "",
+  //       disRate: product?.discount?.numberDecimal || "",
+  //     });
+  //   }
+  // }, [product, reset]);
+  
 
   return (
     <div>

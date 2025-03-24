@@ -49,6 +49,7 @@ const schema = yup.object().shape({
 function Product(props) {
   const dispatch = useDispatch();
   const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
+  const options = product?.categories || []; // Ensure it's always an array
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
@@ -60,28 +61,91 @@ function Product(props) {
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
+  const [loading, setLoading] = useState(true);
+
+  // useDeepCompareEffect(() => {
+  //   async function updateProductState() {
+  //     let { productId, "*" : wildcardId } = routeParams;
+
+  //     if (productId === 'details' && wildcardId) {
+  //       productId = wildcardId;
+  //     }
+
+  //     console.log("Fetching productId:", productId);
+
+  //     if (productId === "new") {
+  //       dispatch(newProduct());
+  //     } else if (productId) {
+  //       setLoading(true);  // Set loading before API call
+  //       dispatch(getProduct({ productId })).then((action) => {
+  //         console.log("Fetched Product Data:", action.payload);
+  //         if (!action.payload) {
+  //           setNoProduct(true);
+  //         }
+  //         setLoading(false);  // Disable loading once API call finishes
+  //       }).catch(() => {
+  //         setLoading(false);
+  //       });
+  //     }
+  //   }
+
+  //   updateProductState();
+  // }, [dispatch, routeParams]);
+
+
+  // useEffect(() => {
+  //   if (!product) {
+  //     return;
+  //   }
+  //   /**
+  //    * Reset the form on product state changes
+  //    */
+  //   reset(product);
+  // }, [product, reset]);
 
   useDeepCompareEffect(() => {
     function updateProductState() {
-      const { productId } = routeParams;
+      let { productId, "*": wildcardId } = routeParams;
 
-      if (productId === 'new') {
-        /**
-         * Create New Product data
-         */
+      if (productId === 'details' && wildcardId) {
+        productId = wildcardId;
+      }
+
+      console.log("Route Params:", routeParams);
+      console.log("Final productId to fetch:", productId);
+
+      setLoading(true); // Set loading state to true before fetching data
+
+      if (productId === "new") {
         dispatch(newProduct());
-      } else {
-        /**
-         * Get Product data
-         */
-        dispatch(getProduct(routeParams)).then((action) => {
-          /**
-           * If the requested product is not exist show message
-           */
-          if (!action.payload) {
+        setLoading(false);
+      } else if (productId) {
+        // dispatch(getProduct({ productId })).then((action) => {
+        //   console.log("Fetched Product Data:", action.payload);
+        //   if (!action.payload) {
+        //     setNoProduct(true);
+        //   }
+        //   setLoading(false); // Set loading to false after data is fetched
+        // }).catch((error) => {
+        //   console.error("Error fetching product:", error);
+        //   setLoading(false);
+        // });
+        dispatch(getProduct({ productId })).then((action) => {
+          if (!action.payload || typeof action.payload !== 'object') {
+            console.error("Invalid product data:", action.payload);
             setNoProduct(true);
+          } else {
+            console.log("Fetched Product:", action.payload);
           }
+          setLoading(false);
+        }).catch((error) => {
+          console.error("Error fetching product:", error);
+          setLoading(false);
         });
+
+      } else {
+        console.error("No valid productId found in routeParams");
+        setLoading(false);
       }
     }
 
@@ -90,11 +154,11 @@ function Product(props) {
 
   useEffect(() => {
     if (!product) {
+      console.log("Product is null or undefined, skipping form reset.");
       return;
     }
-    /**
-     * Reset the form on product state changes
-     */
+
+    console.log("Resetting form with product:", product);
     reset(product);
   }, [product, reset]);
 
@@ -144,10 +208,14 @@ function Product(props) {
   /**
    * Wait while product data is loading and form is setted
    */
-  if (
-    _.isEmpty(form) ||
-    (product && routeParams.productId !== product.id && routeParams.productId !== 'new')
-  ) {
+  // if (
+  //   _.isEmpty(form) ||
+  //   (product && routeParams.productId !== product.id && routeParams.productId !== 'new')
+  // ) {
+  //   return <FuseLoading />;
+  // }
+
+  if (!product || _.isEmpty(form)) {
     return <FuseLoading />;
   }
 
@@ -175,15 +243,17 @@ function Product(props) {
         content={
           <div className="p-16 sm:p-24 max-w-2xl">
             <div className={tabValue !== 0 ? 'hidden' : ''}>
-              <BasicInfoTab />
+              <BasicInfoTab product={product}/>
             </div>
 
             <div className={tabValue !== 1 ? 'hidden' : ''}>
-              <ProductImagesTab />
+              {/* <ProductImagesTab /> */}
+              <ProductImagesTab product={product} />
+
             </div>
 
             <div className={tabValue !== 2 ? 'hidden' : ''}>
-              <PricingTab />
+              <PricingTab product={product}/>
             </div>
 
             <div className={tabValue !== 3 ? 'hidden' : ''}>

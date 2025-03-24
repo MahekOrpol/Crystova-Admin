@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import placeholderImg from "../../Img/product-image-placeholder.png";
+import { setSelectedProduct } from "../store/productSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import withRouter from "@fuse/core/withRouter";
@@ -86,6 +87,7 @@ function ProductsTable(props) {
 
 
   function handleClick(item) {
+    dispatch(setSelectedProduct(item)); 
     props.navigate(`/apps/e-commerce/products/details/${item.id}`);
   }
   
@@ -201,7 +203,7 @@ function ProductsTable(props) {
                       className="w-full block rounded"
                       src={
                         n.image
-                          ? `https://crystova.cloudbusiness.cloud${n.image}`
+                          ? `http://localhost:3000${n.image}`
                           : placeholderImg
                       }
                       alt={n.productName}
@@ -210,7 +212,7 @@ function ProductsTable(props) {
                         className="w-full block rounded"
                         src={
                           n.image && n.image.length > 0
-                            ? `https://crystova.cloudbusiness.cloud${n.image[0]}` // Display first image only
+                            ? `http://localhost:3000${n.image[0]}` // Display first image only
                             : placeholderImg
                         }
                         alt={n.productName}

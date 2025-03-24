@@ -4,18 +4,33 @@ import FuseUtils from "@fuse/utils";
 import { useParams } from "react-router-dom";
 
 
+// export const getProduct = createAsyncThunk(
+//   "eCommerceApp/product/getProduct",
+//   async (params) => {
+//     const productId = params?.["*"];
+//     console.log("getProduct params :>> ", productId);
+//     const response = await axios.get(
+//       `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+//     );
+//     const data = await response.data;
+//     return data === undefined ? null : data;
+//   }
+// );
+
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
-  async (params) => {
-    const productId = params?.["*"];
+  async ({ productId }) => {  // Use object destructuring
     console.log("getProduct params :>> ", productId);
+    if (!productId) throw new Error("Product ID is missing!");
+
     const response = await axios.get(
-      `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
+      `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
     );
-    const data = await response.data;
-    return data === undefined ? null : data;
+
+    return response.data || null;
   }
 );
+
 
 export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
@@ -63,7 +78,7 @@ export const saveProduct = createAsyncThunk(
     });
 
     const response = await axios.post(
-      "https://crystova.cloudbusiness.cloud/api/v1/product/create",
+      "http://localhost:3000/api/v1/product/create",
       formData,
       {
         ...product,
@@ -108,14 +123,21 @@ const productSlice = createSlice({
         },
       }),
     },
+    setSelectedProduct: (state, action) => action.payload, // Add this reducer
+
   },
   extraReducers: {
-    [getProduct.fulfilled]: (state, action) => action.payload,
+    // [getProduct.fulfilled]: (state, action) => action.payload,
+    [getProduct.fulfilled]: (state, action) => {
+      console.log("Fetched Product:", action.payload);
+      return action.payload;
+    },
+    
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },
 });
 
-export const { newProduct, resetProduct } = productSlice.actions;
+export const { newProduct, resetProduct ,setSelectedProduct } = productSlice.actions;
 
 export default productSlice.reducer;

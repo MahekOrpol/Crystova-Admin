@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -9,7 +10,7 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-function InventoryTab(props) {
+function InventoryTab() {
   const methods = useFormContext();
   const { control ,setValue} = methods;
   const [stock, setStock] = useState("");
@@ -94,36 +95,45 @@ function InventoryTab(props) {
         )}
       />
 
-
-      <Controller
-        name="productSize"
-        control={control}
-        id='productSize'
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
-            className="mt-8 mb-16"
-            multiple
-            freeSolo
-            options={[]}
-            value={value}
-            onChange={(event, newValue) => {
-              onChange(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple product Size"
-                label="Product Size"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
+<Controller
+  name="productSize"
+  control={control}
+  id="productSize"
+  defaultValue={[]} 
+  render={({ field: { onChange, value } }) => (
+    <Autocomplete
+      className="mt-8 mb-16"
+      multiple
+      freeSolo
+      options={[]}
+      value={value}
+      onChange={(event, newValue) => {
+        onChange(newValue);
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder="Select multiple product Size"
+          label="Product Size"
+          variant="outlined"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      )}
+      renderTags={(tagValue, getTagProps) =>
+        tagValue.map((option, index) => (
+          <Chip
+            key={index}
+            label={option.toString().replace(/\[|\]/g, "")} // Removes brackets from display
+            {...getTagProps({ index })}
           />
-        )}
-      />
+        ))
+      }
+    />
+  )}
+/>
+
 
       {/* <FormControl fullWidth className="mt-8 mb-16">
         <InputLabel id="stock-label">Stock</InputLabel>

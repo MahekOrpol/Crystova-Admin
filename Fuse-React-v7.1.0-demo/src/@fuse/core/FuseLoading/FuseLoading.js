@@ -21,7 +21,7 @@ function FuseLoading(props) {
     >
       <Typography className="text-13 sm:text-20 mb-16" color="textSecondary">
         Loading...
-      </Typography>
+      </Typography> 
       <LinearProgress className="w-192 sm:w-320 max-w-full rounded-2" color="secondary" />
     </div>
   );

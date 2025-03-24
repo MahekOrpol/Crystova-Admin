@@ -25,7 +25,7 @@ function IconsUI() {
 
   const getUser = async () => {
     const response = await axios.get(
-      "https://crystova.cloudbusiness.cloud/api/v1/admin/get"
+      "http://localhost:3000/api/v1/admin/get"
     );
     setUser(response.data);
   };

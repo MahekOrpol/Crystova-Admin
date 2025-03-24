@@ -31,7 +31,7 @@ function ProductsHeader(props) {
     if (!categoryName.trim()) return;
 
     try {
-      const response = await axios.post('https://crystova.cloudbusiness.cloud/api/v1/category/create', {
+      const response = await axios.post('http://localhost:3000/api/v1/category/create', {
         categoryName: categoryName.trim(),
       });
       console.log('Category Created:', response.data);

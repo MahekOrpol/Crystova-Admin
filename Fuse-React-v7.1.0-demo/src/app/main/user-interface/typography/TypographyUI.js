@@ -35,7 +35,7 @@ function TypographyUI() {
 
   const getUser = async () => {
     const response = await axios.get(
-      "https://crystova.cloudbusiness.cloud/api/v1/register/get"
+      "http://localhost:3000/api/v1/register/get"
     );
     setUser(response.data);
   };
