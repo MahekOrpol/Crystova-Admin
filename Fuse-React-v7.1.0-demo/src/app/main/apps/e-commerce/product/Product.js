@@ -63,46 +63,6 @@ function Product(props) {
   const form = watch();
   const [loading, setLoading] = useState(true);
 
-  // useDeepCompareEffect(() => {
-  //   async function updateProductState() {
-  //     let { productId, "*" : wildcardId } = routeParams;
-
-  //     if (productId === 'details' && wildcardId) {
-  //       productId = wildcardId;
-  //     }
-
-  //     console.log("Fetching productId:", productId);
-
-  //     if (productId === "new") {
-  //       dispatch(newProduct());
-  //     } else if (productId) {
-  //       setLoading(true);  // Set loading before API call
-  //       dispatch(getProduct({ productId })).then((action) => {
-  //         console.log("Fetched Product Data:", action.payload);
-  //         if (!action.payload) {
-  //           setNoProduct(true);
-  //         }
-  //         setLoading(false);  // Disable loading once API call finishes
-  //       }).catch(() => {
-  //         setLoading(false);
-  //       });
-  //     }
-  //   }
-
-  //   updateProductState();
-  // }, [dispatch, routeParams]);
-
-
-  // useEffect(() => {
-  //   if (!product) {
-  //     return;
-  //   }
-  //   /**
-  //    * Reset the form on product state changes
-  //    */
-  //   reset(product);
-  // }, [product, reset]);
-
   useDeepCompareEffect(() => {
     function updateProductState() {
       let { productId, "*": wildcardId } = routeParams;

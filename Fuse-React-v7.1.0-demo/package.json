@@ -2,7 +2,7 @@
     "name": "fuse-react-app",
     "version": "7.1.0",
     "private": true,
-    "proxy": "http://localhost:3000",
+    "proxy": "https://crystova.cloudbusiness.cloud",
     "dependencies": {
         "@date-io/date-fns-jalali": "2.11.0",
         "@emotion/cache": "11.7.1",

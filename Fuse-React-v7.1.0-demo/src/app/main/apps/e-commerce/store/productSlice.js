@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 //     const productId = params?.["*"];
 //     console.log("getProduct params :>> ", productId);
 //     const response = await axios.get(
-//       `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+//       `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
 //     );
 //     const data = await response.data;
 //     return data === undefined ? null : data;
@@ -24,7 +24,7 @@ export const getProduct = createAsyncThunk(
     if (!productId) throw new Error("Product ID is missing!");
 
     const response = await axios.get(
-      `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+      `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
     );
 
     return response.data || null;
@@ -78,7 +78,7 @@ export const saveProduct = createAsyncThunk(
     });
 
     const response = await axios.post(
-      "http://localhost:3000/api/v1/product/create",
+      "https://crystova.cloudbusiness.cloud/api/v1/product/create",
       formData,
       {
         ...product,
