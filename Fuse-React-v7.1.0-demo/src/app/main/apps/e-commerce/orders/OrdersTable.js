@@ -59,6 +59,14 @@ function OrdersTable(props) {
     });
   }
 
+  const statusMap = {
+    pending: { name: 'Pending', color: 'orange' },
+    shipped: { name: 'Shipped', color: 'blue' },
+    delivered: { name: 'Delivered', color: 'green' },
+    cancelled: { name: 'Cancelled', color: 'red' },
+  };
+  
+  
   function handleSelectAllClick(event) {
     if (event.target.checked) {
       setSelected(data.map((n) => n.id));
@@ -72,7 +80,7 @@ function OrdersTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/apps/e-commerce/orders/${item.id}`);
+    props.navigate(`/apps/e-commerce/orders/${item.orderId}`);
   }
 
   function handleCheck(event, id) {
@@ -161,8 +169,8 @@ function OrdersTable(props) {
               [order.direction]
             )
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = selected.indexOf(n.id) !== -1;
+              .map((n,index) => {
+                const isSelected = selected.indexOf(n?.data?.id || n?.id) !== -1;
                 return (
                   <TableRow
                     className="h-72 cursor-pointer"
@@ -170,7 +178,7 @@ function OrdersTable(props) {
                     role="checkbox"
                     aria-checked={isSelected}
                     tabIndex={-1}
-                    key={n.id}
+                    key={n?.id || n?.id || `row-${index}`}
                     selected={isSelected}
                     onClick={(event) => handleClick(n)}
                   >
@@ -183,32 +191,40 @@ function OrdersTable(props) {
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.id}
+                    #{n?.orderId }
                     </TableCell>
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.reference}
-                    </TableCell>
+                 <TableCell>
+                   {new Date(n.createdAt).toLocaleString('en-GB', {
+                     day: '2-digit',
+                     month: 'short', // This gives "Jan", "Feb", etc.
+                     hour: 'numeric',
+                     minute: '2-digit',
+                     hour12: true,
+                   }).replace(',', ' at')}
+                 </TableCell>
+                 
 
                     <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {`${n.customer.firstName} ${n.customer.lastName}`}
+                    {n?.userId?.name}
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
                       <span>₹</span>
-                      {n.total}
+                      {n?.totalPrice?.$numberDecimal}
+                    </TableCell>
+                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+                      {n?.discountTotal?.$numberDecimal}
+                      <span>%</span>
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.payment.method}
+                      {n?.paymentStatus}
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      <OrdersStatus name={n.status[0].name} />
-                    </TableCell>
+                    <OrdersStatus status={statusMap[n?.status] } />
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row">
-                      {n.date}
                     </TableCell>
                   </TableRow>
                 );

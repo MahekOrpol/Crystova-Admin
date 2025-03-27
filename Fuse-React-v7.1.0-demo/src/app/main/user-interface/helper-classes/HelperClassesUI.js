@@ -134,16 +134,15 @@ function HelperClassesUI() {
                         <TableCell>{row?.user?.name}</TableCell>
                         <TableCell>{row?.user?.email}</TableCell>
                         <TableCell>
-                          {new Date(row.createdAt).toLocaleString("en-GB", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            second: "2-digit",
-                            hour12: false,
-                          })}
-                        </TableCell>
+  {new Date(row.createdAt).toLocaleString('en-GB', {
+    day: '2-digit',
+    month: 'short', // This gives "Jan", "Feb", etc.
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).replace(',', ' at')}
+</TableCell>
+
                       </TableRow>
                     ))}
                 </TableBody>

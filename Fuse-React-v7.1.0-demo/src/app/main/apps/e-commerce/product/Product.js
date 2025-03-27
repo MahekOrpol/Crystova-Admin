@@ -49,7 +49,8 @@ const schema = yup.object().shape({
 function Product(props) {
   const dispatch = useDispatch();
   const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
-  const options = product?.categories || []; // Ensure it's always an array
+  // const options = product?.categories || []; // Ensure it's always an array
+  // const options = Array.isArray(product?.categories) ? product.categories : [];
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
@@ -57,54 +58,37 @@ function Product(props) {
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {},
+    // productSize: [],
     resolver: yupResolver(schema),
   });
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
   const [loading, setLoading] = useState(true);
 
+  
   useDeepCompareEffect(() => {
     function updateProductState() {
       let { productId, "*": wildcardId } = routeParams;
 
-      if (productId === 'details' && wildcardId) {
+      if (productId === "details" && wildcardId) {
         productId = wildcardId;
       }
 
-      console.log("Route Params:", routeParams);
-      console.log("Final productId to fetch:", productId);
-
-      setLoading(true); // Set loading state to true before fetching data
+      setLoading(true); // Set loading state before fetching
 
       if (productId === "new") {
         dispatch(newProduct());
         setLoading(false);
       } else if (productId) {
-        // dispatch(getProduct({ productId })).then((action) => {
-        //   console.log("Fetched Product Data:", action.payload);
-        //   if (!action.payload) {
-        //     setNoProduct(true);
-        //   }
-        //   setLoading(false); // Set loading to false after data is fetched
-        // }).catch((error) => {
-        //   console.error("Error fetching product:", error);
-        //   setLoading(false);
-        // });
-        dispatch(getProduct({ productId })).then((action) => {
-          if (!action.payload || typeof action.payload !== 'object') {
-            console.error("Invalid product data:", action.payload);
-            setNoProduct(true);
-          } else {
-            console.log("Fetched Product:", action.payload);
-          }
-          setLoading(false);
-        }).catch((error) => {
-          console.error("Error fetching product:", error);
-          setLoading(false);
-        });
-
+        dispatch(getProduct({ productId }))
+          .then((action) => {
+            if (!action.payload || typeof action.payload !== "object") {
+              setNoProduct(true);
+            }
+            setLoading(false);
+          })
+          .catch(() => setLoading(false));
       } else {
-        console.error("No valid productId found in routeParams");
         setLoading(false);
       }
     }
@@ -113,13 +97,9 @@ function Product(props) {
   }, [dispatch, routeParams]);
 
   useEffect(() => {
-    if (!product) {
-      console.log("Product is null or undefined, skipping form reset.");
-      return;
+    if (product) {
+      reset(product);
     }
-
-    console.log("Resetting form with product:", product);
-    reset(product);
   }, [product, reset]);
 
   useEffect(() => {
@@ -138,7 +118,6 @@ function Product(props) {
   function handleTabChange(event, value) {
     setTabValue(value);
   }
-
   /**
    * Show Message if the requested products is not exists
    */

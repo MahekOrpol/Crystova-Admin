@@ -1,11 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const getOrder = createAsyncThunk('eCommerceApp/order/getOrder', async (params) => {
-  const response = await axios.get('/api/e-commerce-app/order', { params });
-  const data = await response.data;
+export const getOrder = createAsyncThunk('eCommerceApp/order/getOrder', async ({orderId}) => {
+if(!orderId) throw new Error('Ordxer Id is missing!');
+  
+  const response = await axios.get(`https://crystova.cloudbusiness.cloud/api/v1/order/get-single/${orderId}`);
 
-  return data === undefined ? null : data;
+  return response.data || null;
+
 });
 
 export const saveOrder = createAsyncThunk('eCommerceApp/order/saveOrder', async (order) => {

@@ -110,10 +110,10 @@ function Order(props) {
                   animate={{ x: 0, opacity: 1, transition: { delay: 0.3 } }}
                 >
                   <Typography className="text-16 sm:text-20 truncate font-semibold">
-                    {`Order ${order.reference}`}
+                    {`Order`}
                   </Typography>
                   <Typography variant="caption" className="font-medium">
-                    {`From ${order.customer.firstName} ${order.customer.lastName}`}
+                    {`#${order.data.order.orderId}`}
                   </Typography>
                 </motion.div>
               </div>

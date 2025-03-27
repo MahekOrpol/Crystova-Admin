@@ -28,14 +28,14 @@ function BasicInfoTab({ product }) {
 
   useEffect(() => {
     if (product && categories.length) {
-      const matchedCategories = categories.filter(cat => 
+      const matchedCategories = categories.filter(cat =>
         product.categoryName?.includes(cat.categoryName)
       );
       reset({
         ...product,
         categoryName: matchedCategories
       });
-      
+
     }
   }, [product, categories, reset]);
 
@@ -114,226 +114,37 @@ function BasicInfoTab({ product }) {
         )}
       />
 
-      {/* <Controller
-        name="categoryName"
-        control={control}
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
-            className="mt-8 mb-16"
-            multiple
-            freeSolo
-            options={[]}
-            value={value}
-            onChange={(event, newValue) => {
-              onChange(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple categories"
-                label="Category Name"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
-          />
-        )}
-      /> */}
-
-      {/* <Controller
-        name="categoryName"
-        control={control}
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
-            className="mt-8 mb-16"
-            multiple
-            options={categories || []} // Use fetched categories
-            // getOptionLabel={(option) => option.categoryName || option} // Adjust label
-            getOptionLabel={(option) => (typeof option === "string" ? option : option.categoryName)}
-
-            value={value}
-            onChange={(event, newValue) => {
-              onChange(newValue);
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple categories"
-                label="Category Name"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
-          />
-        )}
-      /> */}
-      {/* <Controller
-        name="categoryName"
-        control={control}
-        defaultValue={[]}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
-            className="mt-8 mb-16"
-            multiple
-            options={Array.isArray(categories) ? categories : []}
-
-            // options={categories} // ✅ Use fetched categories
-            getOptionLabel={(option) =>
-              typeof option === "string"
-                ? option
-                : option?.categoryName || "Unknown Category"
-            }
-            value={Array.isArray(value) ? value : []}
-            onChange={(event, newValue) => onChange(newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple categories"
-                label="Category Name"
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            )}
-          />
-        )}
-      /> */}
-
 <Controller
   name="categoryName"
   control={control}
-  defaultValue={[]} // Ensure default is always array
-  render={({ field: { onChange, value } }) => (
-    <Autocomplete
-      className="mt-8 mb-16"
-      multiple
-      // options={categories || []} // ✅ API data as options
-      // getOptionLabel={(option) => option?.label || ''}
-      // isOptionEqualToValue={(option, value) => option?._id === value?._id}
-      options={categories || []}
-      getOptionLabel={(option) => option?.label || ''}
-      isOptionEqualToValue={(option, value) => option?._id === value?._id}
-      value={Array.isArray(value) ? value : []}
-      onChange={(event, newValue) => onChange(newValue)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select multiple categories"
-          label="Category Name"
-          variant="outlined"
-          InputLabelProps={{ shrink: true }}
-        />
-      )}
-    />
-  )}
+  defaultValue={[]} // Ensure default is always an array
+  render={({ field: { onChange, value } }) => {
+    console.log("Categories:", categories); // Log categories from API
+    console.log("Selected Categories:", value); // Log selected values
+    
+    return (
+      <Autocomplete
+        className="mt-8 mb-16"
+        multiple
+        options={categories || []} // ✅ Ensure API data is used
+        getOptionLabel={(option) => option?.categoryName || ''} // ✅ Correct label field
+        isOptionEqualToValue={(option, value) => option?.id === value?.id} // ✅ Proper ID matching
+        value={Array.isArray(value) ? value : []}
+        onChange={(event, newValue) => onChange(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            placeholder="Select multiple categories"
+            label="Category Name"
+            variant="outlined"
+            InputLabelProps={{ shrink: true }}
+          />
+        )}
+      />
+    );
+  }}
 />
 
-
-      {/* <Controller
-        name="categoryName"
-        control={control}
-        defaultValue={[]} // ✅ Defensive default
-        render={({ field: { onChange, value = [] } }) => (
-          <Autocomplete
-            className="mt-8 mb-16"
-            multiple
-            options={categories}
-            getOptionLabel={(option) =>
-              typeof option === "string"
-                ? option
-                : option?.categoryName || "Unknown Category"
-            }
-            value={Array.isArray(value) ? value : []} // ✅ Ensure value is always an array
-            onChange={(event, newValue) => onChange(newValue)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Select multiple categories"
-                label="Category Name"
-                variant="outlined"
-                InputLabelProps={{ shrink: true }}
-              />
-            )}
-          />
-        )}
-      /> */}
-
-      {/* 
-<Controller
-  name="categoryName"
-  control={control}
-  defaultValue={[]} // Ensure default value is an array
-  render={({ field: { onChange, value } }) => (
-    <Autocomplete
-      className="mt-8 mb-16"
-      multiple
-      // options={categories || []}
-      options={categories || []}
-      // getOptionLabel={(option) =>
-      //   option && typeof option === "object" && option.categoryName
-      //     ? option.categoryName
-      //     : "Unknown Category" // ✅ Safe fallback
-      // }
-      getOptionLabel={(option) =>
-        typeof option === "string"
-          ? option
-          : option?.categoryName || "Unknown Category"
-      }
-      
-      value={Array.isArray(value) ? value : []} 
-      onChange={(event, newValue) => {
-        onChange(newValue);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select multiple categories"
-          label="Category Name"
-          variant="outlined"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      )}
-    />
-  )}
-/> */}
-
-      {/* <Controller
-  name="categoryName"
-  control={control}
-  defaultValue={[]} // Ensure default value is an array
-  render={({ field: { onChange, value } }) => (
-    <Autocomplete
-      className="mt-8 mb-16"
-      multiple
-      options={categories || []}
-      getOptionLabel={(option) => (typeof option === "string" ? option : option.categoryName)}
-      value={Array.isArray(value) ? value : []} // Ensure value is always an array
-      onChange={(event, newValue) => {
-        onChange(newValue);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select multiple categories"
-          label="Category Name"
-          variant="outlined"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      )}
-    />
-  )}
-/> */}
 
       <Controller
         name="tags"

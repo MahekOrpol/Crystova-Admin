@@ -18,39 +18,9 @@ function PricingTab({product}) {
     }
   }, [product, reset]);
 
-  // useEffect(() => {
-  //   if (product) {
-  //     reset({
-  //       priceTaxIncl: product?.regularPrice?.$numberDecimal || "",
-  //       salePriceTaxIncl: product?.salePrice?.numberDecimal || "",
-  //       disRate: product?.discount?.numberDecimal || "",
-  //     });
-  //   }
-  // }, [product, reset]);
-  
-
   return (
     <div>
-      {/* <Controller
-        name="priceTaxExcl"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="Tax Excluded Price"
-            id="priceTaxExcl"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            }}
-            type="number"
-            variant="outlined"
-            autoFocus
-            fullWidth
-          />
-        )}
-      /> */}
-
+     
       <Controller
         name="priceTaxIncl"
         control={control}
@@ -107,25 +77,6 @@ function PricingTab({product}) {
         )}
       />
 
-      {/* <Controller
-        name="comparedPrice"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            className="mt-8 mb-16"
-            label="Compared Price"
-            id="comparedPrice"
-            InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
-            }}
-            type="number"
-            variant="outlined"
-            fullWidth
-            helperText="Add a compare price to show next to the real price"
-          />
-        )}
-      /> */}
     </div>
   );
 }

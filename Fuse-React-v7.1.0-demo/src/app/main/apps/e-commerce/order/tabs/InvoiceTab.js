@@ -74,20 +74,20 @@ const InvoiceTab = (props) => {
                 </table>
 
                 <Typography color="textSecondary">
-                  {`${props.order.customer.firstName} ${props.order.customer.lastName}`}
+                  {props?.order?.customer?.firstName || 'MHK'}
                 </Typography>
 
-                {props.order.customer.invoiceAddress.address && (
+                {/* {props.order.customer.invoiceAddress.address && (
                   <Typography color="textSecondary">
-                    {props.order.customer.invoiceAddress.address}
+                    {props?.order?.customer?.invoiceAddress?.address}
                   </Typography>
-                )}
-                {props.order.customer.phone && (
+                )} */}
+                {/* {props.order.customer.phone && (
                   <Typography color="textSecondary">{props.order.customer.phone}</Typography>
                 )}
                 {props.order.customer.email && (
                   <Typography color="textSecondary">{props.order.customer.email}</Typography>
-                )}
+                )} */}
               </div>
 
               <div className="seller flex items-center p-16">
@@ -117,7 +117,7 @@ const InvoiceTab = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {props.order.products.map((product) => (
+                  {/* {props.order.products.map((product) => (
                     <TableRow key={product.id}>
                       <TableCell>
                         <Typography variant="subtitle1">{product.name}</Typography>
@@ -128,7 +128,7 @@ const InvoiceTab = (props) => {
                         {formatter.format(product.price * product.quantity)}
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                 </TableBody>
               </Table>
 
