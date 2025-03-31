@@ -47,7 +47,7 @@ class JwtService extends FuseUtils.EventEmitter {
 
   createUser = (data) => {
     return new Promise((resolve, reject) => {
-      axios.post('https://crystova.cloudbusiness.cloud/api/v1/admin/register', data).then((response) => {
+      axios.post('http://localhost:3000/api/v1/admin/register', data).then((response) => {
         if (response.data.user) {
           if (response.status === 201) {
           this.setSession(response.data.access_token);
@@ -63,7 +63,7 @@ class JwtService extends FuseUtils.EventEmitter {
   signInWithEmailAndPassword = (email, password) => {
     return new Promise((resolve, reject) => {
       axios
-        .post('https://crystova.cloudbusiness.cloud/api/v1/admin/login', {
+        .post('http://localhost:3000/api/v1/admin/login', {
           email,
           password,
         })

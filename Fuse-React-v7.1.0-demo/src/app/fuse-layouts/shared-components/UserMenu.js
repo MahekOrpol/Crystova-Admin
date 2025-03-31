@@ -29,7 +29,7 @@ function UserMenu(props) {
 
   const getAdmin = async () => {
     try {
-      const res = await axios.get("https://crystova.cloudbusiness.cloud/api/v1/admin/get");
+      const res = await axios.get("http://localhost:3000/api/v1/admin/get");
       const storedAdminId = localStorage.getItem("adminId"); // Get admin ID from localStorage
 
       // Find the admin whose id matches localStorage adminId
@@ -69,7 +69,7 @@ function UserMenu(props) {
             {"Admin"}
           </Typography>
         </div>
-        {user?.data?.photoURL ? (
+        {/* {user?.data?.photoURL ? (
           <Avatar
             className="md:mx-4"
             alt="user photo"
@@ -77,9 +77,9 @@ function UserMenu(props) {
           />
         ) : (
           <Avatar className="md:mx-4">
-            {admin?.img || user.data.photoURL}
+            {admin?.img || user?.data?.photoURL}
           </Avatar>
-        )}
+        )} */}
       </Button>
 
       <Popover

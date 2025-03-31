@@ -5,6 +5,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Switch,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
@@ -14,34 +15,64 @@ function InventoryTab() {
   const methods = useFormContext();
   const { control, setValue, watch } = methods;
   const [stock, setStock] = useState("");
+  const [enableVariations, setEnableVariations] = useState(false);
+  const [variations, setVariations] = useState([]);
 
-  // const [variations, setVariations] = useState([]);
-  // const selectedSizes = watch("productSize") || [];
-  
+  const selectedSizes = watch("productSize") || [];
+
   // useEffect(() => {
-  //   const newVariations = selectedSizes.map((size) => {
-  //     const existing = variations.find((v) => v.size === size);
-  //     return existing || { size, price: "", quantity: "" };
-  //   });
-  
-  //   // Compare stringified JSON to detect real changes
-  //   if (JSON.stringify(newVariations) !== JSON.stringify(variations)) {
-  //     setVariations(newVariations);
-  //     setValue("productVariations", newVariations);
-  //   }
-  // }, [selectedSizes]);
-    
-  // // Handle price/quantity updates in variations
-  // const handleVariationChange = (index, field, value) => {
-  //   const updated = [...variations];
-  //   updated[index][field] = value;
-  //   setVariations(updated);
-  //   setValue("productVariations", updated);
-  // };
+  //   if (enableVariations) {
+  //     const newVariations = selectedSizes.map((size) => {
+  //       return (
+  //         variations.find((v) => v.size === size) || {
+  //           size,
+  //           regularPrice: "",
+  //           salePrice: "",
+  //           discount: "",
+  //         }
+  //       );
+  //     });
 
-  const handleStockChange = (event) => {
-    setStock(event.target.value);
-  };
+  //     // Prevent unnecessary updates by checking if variations have changed
+  //     if (JSON.stringify(newVariations) !== JSON.stringify(variations)) {
+  //       setVariations(newVariations);
+  //       setValue("productVariations", newVariations);
+  //     }
+  //   } else {
+  //     if (variations.length > 0) {
+  //       setVariations([]);
+  //       setValue("productVariations", []);
+  //     }
+  //   }
+  // }, [enableVariations, selectedSizes, setValue]);
+
+  useEffect(() => {
+    if (enableVariations) {
+      const newVariations = selectedSizes.map((productSize) => {
+        return (
+          variations.find((v) => v.productSize === productSize) || {
+            productSize: productSize,  // Ensure correct key
+            regularPrice: watch("regularPrice") || "",  
+            salePrice: watch("salePrice") || "", 
+            discount: watch("discount") || ""
+          }
+        );
+      });
+  
+      if (JSON.stringify(newVariations) !== JSON.stringify(variations)) {
+        setVariations(newVariations);
+        setValue("productVariations", newVariations);
+        setValue("variations", JSON.stringify(newVariations));  
+      }
+    } else {
+      if (variations.length > 0) {
+        setVariations([]);
+        setValue("productVariations", []);
+        setValue("variations", "[]"); // Send empty array as string
+      }
+    }
+  }, [enableVariations, selectedSizes, setValue, watch]);
+  
 
   return (
     <div>
@@ -62,107 +93,54 @@ function InventoryTab() {
         )}
       />
 
-{/* <Controller
-  name="quantity"
-  control={control}
-  render={({ field }) => (
-    <TextField
-      {...field}
-      className="mt-8 mb-16"
-      label="Quantity"
-      id="quantity"
-      variant="outlined"
-      type="number"
-      fullWidth
-      onChange={(e) => {
-        const value = parseInt(e.target.value, 10);
-        field.onChange(e); // update form state
-        if (value > 0) {
-          setValue("stock", "In Stock");
-        } else if (value === 0) {
-          setValue("stock", "Sold Out");
-        } else {
-          setValue("stock", "");
-        }
-      }}
-    />
-  )}
-/> */}
+      <Controller
+        name="quantity"
+        control={control}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            className="mt-8 mb-16"
+            label="Quantity"
+            id="quantity"
+            variant="outlined"
+            type="number"
+            fullWidth
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              field.onChange(e);
 
-
-<Controller
-  name="quantity"
-  control={control}
-  // defaultValue=""
-  render={({ field }) => (
-    <TextField
-      {...field}
-      className="mt-8 mb-16"
-      label="Quantity"
-      id="quantity"
-      variant="outlined"
-      type="number"
-      fullWidth
-      onChange={(e) => {
-        const value = parseInt(e.target.value, 10);
-
-        field.onChange(e); // Ensure value is properly updated
-
-        // Auto-update stock based on quantity
-        if (value > 0) {
-          setValue("stock", "In Stock");
-        } else if (value === 0) {
-          setValue("stock", "Sold Out");
-        } else {
-          setValue("stock", ""); // Optional, for negative or invalid values
-        }
-      }}
-    />
-  )}
-/>
-
-
-<Controller
-  name="productSize"
-  control={control}
-  id="productSize"
-  defaultValue={[]} 
-  render={({ field: { onChange, value } }) => (
-    <Autocomplete
-      className="mt-8 mb-16"
-      multiple
-      freeSolo
-      options={[]}
-      value={value || []}
-      onChange={(event, newValue) => {
-        onChange(newValue);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Select multiple product Size"
-          label="Product Size"
-          variant="outlined"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-      )}
-      renderTags={(tagValue, getTagProps) =>
-        tagValue.map((option, index) => (
-          <Chip
-            key={`${option}-${index}`}  // Ensures uniqueness
-            label={option.toString().replace(/\[|\]/g, "")} 
-            {...getTagProps({ index })}
+              if (value > 0) {
+                setValue("stock", "In Stock");
+              } else if (value === 0) {
+                setValue("stock", "Sold Out");
+              } else {
+                setValue("stock", "");
+              }
+            }}
           />
-        ))
-      }
+        )}
+      />
 
-    />
-  )}
-/>
-
-{/* <Controller
+      <Controller
+        name="enableVariations"
+        control={control}
+        render={({ field }) => (
+          <Switch
+            checked={field.value}
+            onChange={(e) => {
+              const isEnabled = e.target.checked;
+              field.onChange(isEnabled);
+              setEnableVariations(isEnabled);
+              setValue("hasVariations", isEnabled); // Ensure payload includes hasVariations
+              if (!isEnabled) {
+                setVariations([]);
+                setValue("productVariations", []);
+              }
+            }}
+          />
+        )}
+      />
+      <Controller
         name="productSize"
         control={control}
         defaultValue={[]}
@@ -185,92 +163,71 @@ function InventoryTab() {
             )}
             renderTags={(tagValue, getTagProps) =>
               tagValue.map((option, index) => (
-                <Chip
-                  key={`${option}-${index}`}
-                  label={option}
-                  {...getTagProps({ index })}
-                />
+                <Chip key={`${option}-${index}`} label={option} {...getTagProps({ index })} />
               ))
             }
           />
         )}
-      /> */}
+      />
 
-      {/* Dynamic Size-Price-Quantity Inputs
-      {variations.map((variation, index) => (
-        <div key={index} className="flex gap-4 mb-4">
-          <TextField
-            label={`Size: ${variation.size}`}
-            value={variation.size}
-            variant="outlined"
-            disabled
-            style={{ width: "150px" }}
-          />
-          <TextField
-            label="Price"
-            type="number"
-            variant="outlined"
-            value={variation.price}
-            onChange={(e) =>
-              handleVariationChange(index, "price", e.target.value)
-            }
-          />
-          <TextField
-            label="Price"
-            type="number"
-            variant="outlined"
-            value={variation.price}
-            onChange={(e) =>
-              handleVariationChange(index, "price", e.target.value)
-            }
-          />
-          <TextField
-            label="Quantity"
-            type="number"
-            variant="outlined"
-            value={variation.quantity}
-            onChange={(e) =>
-              handleVariationChange(index, "quantity", e.target.value)
-            }
-          />
-        </div>
-      ))} */}
+      {enableVariations &&
+        variations.map((variation, index) => (
+          <div key={index} className="flex gap-4 mb-4">
+            <TextField label={`Size: ${variation.productSize}`} variant="outlined" disabled />
+            <TextField
+              label="Regular Price"
+              type="number"
+              variant="outlined"
+              value={variation.regularPrice}
+              onChange={(e) => {
+                const updated = [...variations];
+                updated[index].regularPrice = e.target.value;
+                setVariations(updated);
+                setValue("productVariations", updated);
+              }}
+            />
+            <TextField
+              label="Sale Price"
+              type="number"
+              variant="outlined"
+              value={variation.salePrice}
+              onChange={(e) => {
+                const updated = [...variations];
+                updated[index].salePrice = e.target.value;
+                setVariations(updated);
+                setValue("productVariations", updated);
+              }}
+            />
+            <TextField
+              label="Discount"
+              type="number"
+              variant="outlined"
+              value={variation.discount}
+              onChange={(e) => {
+                const updated = [...variations];
+                updated[index].discount = e.target.value;
+                setVariations(updated);
+                setValue("productVariations", updated);
+              }}
+            />
+          </div>
+        ))}
 
-
-      {/* <FormControl fullWidth className="mt-8 mb-16">
-        <InputLabel id="stock-label">Stock</InputLabel>
-        <Select
-        name="stock"
-          labelId="stock-label"
-          id="stock"
-          value={stock}
-          label="Stock"
-          onChange={handleStockChange}
-        >
-          <MenuItem value="In Stock">In Stock</MenuItem>
-          <MenuItem value="Sold Out">Sold Out</MenuItem>
-        </Select>
-      </FormControl> */}
-       <Controller
+      <Controller
         name="stock"
         control={control}
         defaultValue=""
         render={({ field }) => (
           <FormControl fullWidth className="mt-8 mb-16">
             <InputLabel id="stock-label">Stock</InputLabel>
-            <Select
-              {...field}
-              labelId="stock-label"
-              id="stock"
-              label="Stock"
-            >
+            <Select {...field} labelId="stock-label" id="stock" label="Stock">
               <MenuItem value="In Stock">In Stock</MenuItem>
               <MenuItem value="Sold Out">Sold Out</MenuItem>
             </Select>
           </FormControl>
         )}
       />
-       <Controller
+      <Controller
         name="gender"
         control={control}
         defaultValue=""
@@ -280,7 +237,8 @@ function InventoryTab() {
             <Select
               {...field}
               labelId="gender-label"
-              value={field.value || ""} onChange={field.onChange}
+              value={field.value || ""}
+              onChange={field.onChange}
               id="gender"
               label="gender"
             >
@@ -290,28 +248,6 @@ function InventoryTab() {
           </FormControl>
         )}
       />
-      {/* <Controller
-  name="stock"
-  control={control}
-  defaultValue=""
-  render={({ field }) => (
-    <FormControl fullWidth className="mt-8 mb-16">
-      <InputLabel id="stock-label">Stock</InputLabel>
-      <Select
-        {...field}
-        labelId="stock-label"
-        id="stock"
-        label="Stock"
-      >
-        <MenuItem value="In Stock">In Stock</MenuItem>
-        <MenuItem value="Sold Out">Sold Out</MenuItem>
-      </Select>
-    </FormControl>
-  )}
-/> */}
-
- 
-
     </div>
   );
 }

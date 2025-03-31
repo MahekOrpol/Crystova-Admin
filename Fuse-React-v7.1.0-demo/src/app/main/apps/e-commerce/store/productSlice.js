@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 //     const productId = params?.["*"];
 //     console.log("getProduct params :>> ", productId);
 //     const response = await axios.get(
-//       `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
+//       `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
 //     );
 //     const data = await response.data;
 //     return data === undefined ? null : data;
@@ -24,7 +24,7 @@ export const getProduct = createAsyncThunk(
     if (!productId) throw new Error("Product ID is missing!");
 
     const response = await axios.get(
-      `https://crystova.cloudbusiness.cloud/api/v1/product/getSingleProduct/${productId}`
+      `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
     );
 
     return response.data || null;
@@ -46,7 +46,7 @@ export const saveProduct = createAsyncThunk(
   "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
     const { product } = getState().eCommerceApp;
-
+console.log('productData', productData)
     const formData = new FormData();
     formData.append(
       "categoryName",
@@ -68,7 +68,7 @@ export const saveProduct = createAsyncThunk(
         ? productData.productSize.join(",")
         : productData.productSize
     );
-    
+    // formData.append("hasVariations", productData.enableVariations ? "true" : "false");
     formData.append("sku", productData.sku);
     formData.append("quantity", productData.quantity);
 
@@ -76,13 +76,25 @@ export const saveProduct = createAsyncThunk(
     productData.images?.forEach((img) => {
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
+    formData.append("hasVariations", productData.hasVariations && productData.productVariations?.length > 0 ? "true" : "false");
 
+    if (productData.hasVariations && productData.productVariations?.length > 0) {
+      formData.append("variations",JSON.stringify( productData.productVariations));
+    } else {
+      formData.append("variations", "[]"); // Prevent empty variations when disabled
+    }
+    
+    
+    
+    console.log("Final Payload:", formData);
     const response = await axios.post(
-      "https://crystova.cloudbusiness.cloud/api/v1/product/create",
+      "http://localhost:3000/api/v1/product/create",
       formData,
       {
         ...product,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data", 
+          "Accept": "application/json" },
       }
     );
 
@@ -134,7 +146,7 @@ export const updateProduct = createAsyncThunk(
     });
 
     const response = await axios.put(
-      `https://crystova.cloudbusiness.cloud/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
+      `http://localhost:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
       formData,
       {
         ...product,

@@ -56,7 +56,7 @@ function ProductImagesTab({product }) {
     if (Array.isArray(product?.image) && product.image.length > 0) {
       const formattedImages = product.image.map((img, index) => ({
         id: index.toString(),
-        url: `https://crystova.cloudbusiness.cloud${img}`,
+        url: `http://localhost:3000${img}`,
         file: null,
         type: 'image',
       }));

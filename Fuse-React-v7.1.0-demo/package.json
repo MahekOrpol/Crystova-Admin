@@ -2,7 +2,7 @@
     "name": "fuse-react-app",
     "version": "7.1.0",
     "private": true,
-    "proxy": "https://crystova.cloudbusiness.cloud",
+    "proxy": "http://localhost:3000",
     "dependencies": {
         "@date-io/date-fns-jalali": "2.11.0",
         "@emotion/cache": "11.7.1",
@@ -25,7 +25,7 @@
         "apexcharts": "3.32.0",
         "auth0-lock": "11.31.1",
         "autosuggest-highlight": "3.2.0",
-        "axios": "0.24.0",
+        "axios": "^0.27.2",
         "axios-mock-adapter": "1.20.0",
         "clsx": "1.1.1",
         "crypto-js": "4.1.1",

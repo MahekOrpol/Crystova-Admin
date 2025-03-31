@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/too
 import axios from 'axios';
 
 export const getOrders = createAsyncThunk('eCommerceApp/orders/getOrders', async () => {
-  const response = await axios.get('https://crystova.cloudbusiness.cloud/api/v1/order/get');
+  const response = await axios.get('http://localhost:3000/api/v1/order/get');
   const data = await response.data?.data;
   console.log('data :>> ', data);
 

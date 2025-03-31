@@ -14,18 +14,6 @@ function BasicInfoTab({ product }) {
   } = methods;
   const [categories, setCategories] = useState([]);
 
-  // useEffect(() => {
-  //   if (product) {
-  //     // Find matching category object from fetched categories
-  //     const matchedCategory = categories?.find(cat => cat.categoryName === product.categoryName);
-
-  //     reset({
-  //       ...product,
-  //       categoryName: matchedCategory ? [matchedCategory] : [], // Always an array of category object(s)
-  //     });
-  //   }
-  // }, [product, categories, reset]);
-
   useEffect(() => {
     if (product && categories.length) {
       const matchedCategories = categories.filter(cat =>
@@ -39,16 +27,6 @@ function BasicInfoTab({ product }) {
     }
   }, [product, categories, reset]);
 
-  // useEffect(() => {
-  //   if (product) {
-  //     reset({
-  //       ...product,
-  //       categoryName: Array.isArray(product.categoryName)
-  //         ? product.categoryName
-  //         : product.categoryName ? [product.categoryName] : [], // ✅ Ensures it's always an array
-  //     });
-  //   }
-  // }, [product, reset]);
 
   const getCategories = async () => {
     try {
