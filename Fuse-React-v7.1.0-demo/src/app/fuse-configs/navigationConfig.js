@@ -3,6 +3,7 @@ import i18next from "i18next";
 import DocumentationNavigation from "../main/documentation/DocumentationNavigation";
 import { ImUsers } from "react-icons/im";
 import { IoHeartCircleOutline } from "react-icons/io5";
+import { HiOutlineViewGridAdd } from "react-icons/hi";
 
 import ar from "./navigation-i18n/ar";
 import en from "./navigation-i18n/en";
@@ -397,6 +398,14 @@ const navigationConfig = [
       },
     ],
   },
+  {
+    id: "icons",
+    title: "Categories",
+    type: "item",
+    icon: <HiOutlineViewGridAdd />,
+    url: "categories",
+  },
+  
   {
     id: "user-interface",
     title: "User Interface",

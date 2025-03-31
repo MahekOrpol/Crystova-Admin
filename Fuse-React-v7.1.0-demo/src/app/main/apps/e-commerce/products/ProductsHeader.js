@@ -12,6 +12,7 @@ import { setProductsSearchText } from '../store/productsSlice';
 import { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
+import './index.css';
 
 function ProductsHeader(props) {
   const dispatch = useDispatch();

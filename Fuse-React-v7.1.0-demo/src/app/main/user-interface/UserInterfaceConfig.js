@@ -6,6 +6,7 @@ const Blank = lazy(() => import('./page-layouts/blank'));
 const IconsUI = lazy(() => import('./icons/IconsUI'));
 const TypographyUI = lazy(() => import('./typography/TypographyUI'));
 const HelperClassesUI = lazy(() => import('./helper-classes/HelperClassesUI'));
+const Categories = lazy(() => import('../Categories/Categories'));
 
 const UserInterfaceConfig = {
   routes: [
@@ -26,6 +27,10 @@ const UserInterfaceConfig = {
     {
       path: 'product/wishlist',
       element: <HelperClassesUI />,
+    },
+    {
+      path: 'categories',
+      element: <Categories />,
     },
   ],
 };

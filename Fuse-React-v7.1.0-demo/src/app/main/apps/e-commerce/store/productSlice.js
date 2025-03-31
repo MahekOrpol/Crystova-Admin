@@ -76,6 +76,7 @@ console.log('productData', productData)
     productData.images?.forEach((img) => {
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
+
     formData.append("hasVariations", productData.hasVariations && productData.productVariations?.length > 0 ? "true" : "false");
 
     if (productData.hasVariations && productData.productVariations?.length > 0) {
@@ -83,9 +84,7 @@ console.log('productData', productData)
     } else {
       formData.append("variations", "[]"); // Prevent empty variations when disabled
     }
-    
-    
-    
+        
     console.log("Final Payload:", formData);
     const response = await axios.post(
       "http://localhost:3000/api/v1/product/create",
@@ -145,6 +144,14 @@ export const updateProduct = createAsyncThunk(
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
 
+    formData.append("hasVariations", productData.hasVariations && productData.productVariations?.length > 0 ? "true" : "false");
+
+    if (productData.hasVariations && productData.productVariations?.length > 0) {
+      formData.append("variations",JSON.stringify( productData.productVariations));
+    } else {
+      formData.append("variations", "[]"); // Prevent empty variations when disabled
+    }
+    
     const response = await axios.put(
       `http://localhost:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
       formData,
