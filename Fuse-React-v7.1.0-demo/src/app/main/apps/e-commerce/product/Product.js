@@ -23,6 +23,7 @@ import InventoryTab from './tabs/InventoryTab';
 import PricingTab from './tabs/PricingTab';
 import ProductImagesTab from './tabs/ProductImagesTab';
 import ShippingTab from './tabs/ShippingTab';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   '& .FusePageCarded-header': {
@@ -51,6 +52,14 @@ function Product(props) {
   const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
   // const options = product?.categories || []; // Ensure it's always an array
   // const options = Array.isArray(product?.categories) ? product.categories : [];
+
+  const [bestSelling, setBestSelling] = useState(product?.bestSelling || false);
+
+  const handleSwitchChange = (event) => {
+    setBestSelling(event.target.checked);
+    console.log("Best Selling:", event.target.checked);
+  };
+
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
@@ -160,52 +169,61 @@ function Product(props) {
 
   return (
     <FormProvider {...methods}>
-      <Root
-        header={<ProductHeader />}
-        contentToolbar={
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="auto"
-            classes={{ root: 'w-full h-64' }}
-          >
-            <Tab className="h-64" label="Basic Info" />
-            <Tab className="h-64" label="Product Images" />
-            <Tab className="h-64" label="Pricing" />
-            <Tab className="h-64" label="Inventory" />
-            <Tab className="h-64" label="Shipping" />
-          </Tabs>
-        }
-        content={
-          <div className="p-16 sm:p-24 max-w-2xl">
-            <div className={tabValue !== 0 ? 'hidden' : ''}>
-              <BasicInfoTab product={product}/>
-            </div>
+   <Root
+  header={<ProductHeader />}
+  contentToolbar={
+    <Box display="flex" alignItems="center" justifyContent="space-between" className="w-full h-64">
+      {/* Tabs on the left */}
+      <Tabs
+        value={tabValue}
+        onChange={handleTabChange}
+        indicatorColor="primary"
+        textColor="primary"
+        variant="scrollable"
+        scrollButtons="auto"
+      >
+        <Tab className="h-64" label="Basic Info" />
+        <Tab className="h-64" label="Product Images" />
+        <Tab className="h-64" label="Pricing" />
+        <Tab className="h-64" label="Inventory" />
+        <Tab className="h-64" label="Shipping" />
+      </Tabs>
 
-            <div className={tabValue !== 1 ? 'hidden' : ''}>
-              {/* <ProductImagesTab /> */}
-              <ProductImagesTab product={product} />
-
-            </div>
-
-            <div className={tabValue !== 2 ? 'hidden' : ''}>
-              <PricingTab product={product}/>
-            </div>
-
-            <div className={tabValue !== 3 ? 'hidden' : ''}>
-              <InventoryTab />
-            </div>
-
-            <div className={tabValue !== 4 ? 'hidden' : ''}>
-              <ShippingTab />
-            </div>
-          </div>
-        }
-        innerScroll
+      {/* Best Selling Switch on the right */}
+      <FormControlLabel
+        control={<Switch checked={bestSelling} onChange={handleSwitchChange} />}
+        label="Best Selling"
+        sx={{ ml: 'auto' }} // Pushes the switch to the right
       />
+    </Box>
+  }
+  content={
+    <div className="p-16 sm:p-24 max-w-2xl">
+      <div className={tabValue !== 0 ? 'hidden' : ''}>
+        <BasicInfoTab product={product}/>
+      </div>
+
+      <div className={tabValue !== 1 ? 'hidden' : ''}>
+        <ProductImagesTab product={product} />
+      </div>
+
+      <div className={tabValue !== 2 ? 'hidden' : ''}>
+        <PricingTab product={product}/>
+      </div>
+
+      <div className={tabValue !== 3 ? 'hidden' : ''}>
+        <InventoryTab />
+      </div>
+
+      <div className={tabValue !== 4 ? 'hidden' : ''}>
+        <ShippingTab />
+      </div>
+    </div>
+  }
+  innerScroll
+/>
+
+
     </FormProvider>
   );
 }

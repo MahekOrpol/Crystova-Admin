@@ -16,17 +16,15 @@ function BasicInfoTab({ product }) {
 
   useEffect(() => {
     if (product && categories.length) {
-      const matchedCategories = categories.filter(cat =>
+      const matchedCategories = categories.filter((cat) =>
         product.categoryName?.includes(cat.categoryName)
       );
       reset({
         ...product,
-        categoryName: matchedCategories
+        categoryName: matchedCategories,
       });
-
     }
   }, [product, categories, reset]);
-
 
   const getCategories = async () => {
     try {
@@ -34,7 +32,11 @@ function BasicInfoTab({ product }) {
         "https://crystova.cloudbusiness.cloud/api/v1/category/get"
       );
       console.log(response.data);
-      setCategories(Array.isArray(response.data) ? response.data : response.data.categories || []);
+      setCategories(
+        Array.isArray(response.data)
+          ? response.data
+          : response.data.categories || []
+      );
 
       // setCategories(
       //   Array.isArray(response.data.categories) ? response.data.categories : []
@@ -92,37 +94,36 @@ function BasicInfoTab({ product }) {
         )}
       />
 
-<Controller
-  name="categoryName"
-  control={control}
-  defaultValue={[]} // Ensure default is always an array
-  render={({ field: { onChange, value } }) => {
-    console.log("Categories:", categories); // Log categories from API
-    console.log("Selected Categories:", value); // Log selected values
-    
-    return (
-      <Autocomplete
-        className="mt-8 mb-16"
-        multiple
-        options={categories || []} // ✅ Ensure API data is used
-        getOptionLabel={(option) => option?.categoryName || ''} // ✅ Correct label field
-        isOptionEqualToValue={(option, value) => option?.id === value?.id} // ✅ Proper ID matching
-        value={Array.isArray(value) ? value : []}
-        onChange={(event, newValue) => onChange(newValue)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Select multiple categories"
-            label="Category Name"
-            variant="outlined"
-            InputLabelProps={{ shrink: true }}
-          />
-        )}
-      />
-    );
-  }}
-/>
+      <Controller
+        name="categoryName"
+        control={control}
+        defaultValue={[]} // Ensure default is always an array
+        render={({ field: { onChange, value } }) => {
+          console.log("Categories:", categories); // Log categories from API
+          console.log("Selected Categories:", value); // Log selected values
 
+          return (
+            <Autocomplete
+              className="mt-8 mb-16"
+              multiple
+              options={categories || []} // ✅ Ensure API data is used
+              getOptionLabel={(option) => option?.categoryName || ""} // ✅ Correct label field
+              isOptionEqualToValue={(option, value) => option?.id === value?.id} // ✅ Proper ID matching
+              value={Array.isArray(value) ? value : []}
+              onChange={(event, newValue) => onChange(newValue)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Select multiple categories"
+                  label="Category Name"
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                />
+              )}
+            />
+          );
+        }}
+      />
 
       <Controller
         name="tags"

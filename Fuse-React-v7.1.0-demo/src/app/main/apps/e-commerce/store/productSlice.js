@@ -62,6 +62,7 @@ export const saveProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
+    formData.append("best_selling", productData.bestSelling ? 1 : 0);
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
@@ -124,6 +125,7 @@ export const updateProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
+    formData.append("best_selling", productData.bestSelling ? 1 : 0);
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
