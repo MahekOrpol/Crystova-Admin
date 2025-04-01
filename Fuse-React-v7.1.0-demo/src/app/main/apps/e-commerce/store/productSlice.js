@@ -3,7 +3,6 @@ import axios from "axios";
 import FuseUtils from "@fuse/utils";
 import { useParams } from "react-router-dom";
 
-
 // export const getProduct = createAsyncThunk(
 //   "eCommerceApp/product/getProduct",
 //   async (params) => {
@@ -19,7 +18,8 @@ import { useParams } from "react-router-dom";
 
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
-  async ({ productId }) => {  // Use object destructuring
+  async ({ productId }) => {
+    // Use object destructuring
     console.log("getProduct params :>> ", productId);
     if (!productId) throw new Error("Product ID is missing!");
 
@@ -30,7 +30,6 @@ export const getProduct = createAsyncThunk(
     return response.data || null;
   }
 );
-
 
 export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
@@ -46,7 +45,7 @@ export const saveProduct = createAsyncThunk(
   "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
     const { product } = getState().eCommerceApp;
-    console.log('productData', productData)
+    console.log("productData", productData);
     const formData = new FormData();
     formData.append(
       "categoryName",
@@ -62,7 +61,9 @@ export const saveProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
-    formData.append("best_selling", productData.bestSelling ? 1 : 0);
+    // formData.append("best_selling", productData.bestSelling ? "1" : "0");
+    formData.append("best_selling", productData.bestSelling === "1" ? "1" : "0");
+
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
@@ -72,16 +73,26 @@ export const saveProduct = createAsyncThunk(
     // formData.append("hasVariations", productData.enableVariations ? "true" : "false");
     formData.append("sku", productData.sku);
     formData.append("quantity", productData.quantity);
-
-    // Append each image file
+       // Append each image file
     productData.images?.forEach((img) => {
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
 
-    formData.append("hasVariations", productData.hasVariations && productData.productVariations?.length > 0 ? "true" : "false");
+    formData.append(
+      "hasVariations",
+      productData.hasVariations && productData.productVariations?.length > 0
+        ? "true"
+        : "false"
+    );
 
-    if (productData.hasVariations && productData.productVariations?.length > 0) {
-      formData.append("variations", JSON.stringify(productData.productVariations));
+    if (
+      productData.hasVariations &&
+      productData.productVariations?.length > 0
+    ) {
+      formData.append(
+        "variations",
+        JSON.stringify(productData.productVariations)
+      );
     } else {
       formData.append("variations", "[]"); // Prevent empty variations when disabled
     }
@@ -94,7 +105,7 @@ export const saveProduct = createAsyncThunk(
         ...product,
         headers: {
           "Content-Type": "multipart/form-data",
-          "Accept": "application/json"
+          Accept: "application/json",
         },
       }
     );
@@ -109,7 +120,7 @@ export const updateProduct = createAsyncThunk(
   "eCommerceApp/product/updateProduct",
   async (productData, { dispatch, getState }) => {
     const { product } = getState().eCommerceApp;
-    console.log('productData', productData)
+    console.log("productData", productData);
     const formData = new FormData();
     formData.append(
       "categoryName",
@@ -125,7 +136,8 @@ export const updateProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
-    formData.append("best_selling", productData.bestSelling ? 1 : 0);
+    formData.append("best_selling", productData.bestSelling ? "1" : "0");
+
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
@@ -141,13 +153,21 @@ export const updateProduct = createAsyncThunk(
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
 
-    formData.append("hasVariations", productData.hasVariations && productData.productVariations?.length > 0 ? "true" : "false");
+    formData.append(
+      "hasVariations",
+      productData.hasVariations && productData.productVariations?.length > 0
+        ? "true"
+        : "false"
+    );
 
-    if (productData.hasVariations && productData.productVariations?.length > 0) {
+    if (
+      productData.hasVariations &&
+      productData.productVariations?.length > 0
+    ) {
       productData.productVariations?.forEach((variation, index) => {
         formData.append(`variations[${index}]`, JSON.stringify(variation));
       });
-          } else {
+    } else {
       formData.append("variations", "[]"); // Prevent empty variations when disabled
     }
 
@@ -200,7 +220,6 @@ const productSlice = createSlice({
       }),
     },
     setSelectedProduct: (state, action) => action.payload, // Add this reducer
-
   },
   extraReducers: {
     // [getProduct.fulfilled]: (state, action) => action.payload,
@@ -214,6 +233,7 @@ const productSlice = createSlice({
   },
 });
 
-export const { newProduct, resetProduct, setSelectedProduct } = productSlice.actions;
+export const { newProduct, resetProduct, setSelectedProduct } =
+  productSlice.actions;
 
 export default productSlice.reducer;

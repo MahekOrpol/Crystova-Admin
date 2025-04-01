@@ -50,16 +50,19 @@ const schema = yup.object().shape({
 function Product(props) {
   const dispatch = useDispatch();
   const product = useSelector(({ eCommerceApp }) => eCommerceApp.product);
-  // const options = product?.categories || []; // Ensure it's always an array
-  // const options = Array.isArray(product?.categories) ? product.categories : [];
 
-  const [bestSelling, setBestSelling] = useState(product?.bestSelling || false);
-
+  const [bestSelling, setBestSelling] = useState(
+    product?.bestSelling ? product.bestSelling.toString() === "true" : false
+  );
+  
   const handleSwitchChange = (event) => {
-    setBestSelling(event.target.checked);
-    console.log("Best Selling:", event.target.checked);
+    const isChecked = event.target.checked;
+    setBestSelling(isChecked);
+  
+    // Update the form data when switch is toggled
+    methods.setValue("bestSelling", isChecked ? "1" : "0");
   };
-
+  
 
   const routeParams = useParams();
   const [tabValue, setTabValue] = useState(0);
