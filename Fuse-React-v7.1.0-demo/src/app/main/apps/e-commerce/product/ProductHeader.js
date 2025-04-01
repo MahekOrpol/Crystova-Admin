@@ -7,7 +7,8 @@ import { useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import _ from "@lodash";
-import { saveProduct, removeProduct } from "../store/productSlice";
+import { saveProduct, removeProduct, updateProduct } from "../store/productSlice";
+import { useEffect, useState } from "react";
 
 function ProductHeader() {
   const dispatch = useDispatch();
@@ -20,8 +21,25 @@ function ProductHeader() {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  useEffect(() => {
+    const editMode = localStorage.getItem("isEditMode") === "true";
+    setIsEditMode(editMode);
+  }, []);
+
   function handleSaveProduct() {
   dispatch(saveProduct(getValues()))
+    .unwrap()
+    .then(() => {
+      navigate("/apps/e-commerce/products");
+    })
+    .catch((error) => {
+      console.error("Failed to save product", error);
+    });
+}
+  function handleUpdateProduct() {
+  dispatch(updateProduct(getValues()))
     .unwrap()
     .then(() => {
       navigate("/apps/e-commerce/products");
@@ -123,15 +141,28 @@ function ProductHeader() {
         >
           Remove
         </Button>
+       
+        {!isEditMode ? (
+        <Button
+        className="whitespace-nowrap mx-4"
+        variant="contained"
+        color="secondary"
+        // disabled={_.isEmpty(dirtyFields) || !isValid}`
+        onClick={handleSaveProduct}
+      >
+        Save
+      </Button>
+      ) : (
         <Button
           className="whitespace-nowrap mx-4"
           variant="contained"
           color="secondary"
           // disabled={_.isEmpty(dirtyFields) || !isValid}`
-          onClick={handleSaveProduct}
+          onClick={handleUpdateProduct}
         >
-          Save
+          Update
         </Button>
+      )}
       </motion.div>
     </div>
   );

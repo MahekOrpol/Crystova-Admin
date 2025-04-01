@@ -12,7 +12,6 @@ import { setProductsSearchText } from '../store/productsSlice';
 import { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import axios from 'axios';
-import './index.css';
 
 function ProductsHeader(props) {
   const dispatch = useDispatch();
@@ -28,19 +27,7 @@ function ProductsHeader(props) {
     setCategoryName('');
   };
 
-  const handleAddCategory = async () => {
-    if (!categoryName.trim()) return;
 
-    try {
-      const response = await axios.post('http://localhost:3000/api/v1/category/create', {
-        categoryName: categoryName.trim(),
-      });
-      console.log('Category Created:', response.data);
-      handleClose();
-    } catch (error) {
-      console.error('Failed to create category:', error);
-    }
-  };
   return (
     <div className="flex flex-1 w-full items-center justify-between">
       <div className="flex items-center">
@@ -91,15 +78,7 @@ function ProductsHeader(props) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
       >
-        <Button
-          className="whitespace-nowrap"
-          variant="contained"
-          color="secondary"
-          onClick={handleOpen}
-        >
-          <span className="hidden sm:flex">Add New Category</span>
-          <span className="flex sm:hidden">New</span>
-        </Button>
+      
         <Button
           component={Link}
           to="/apps/e-commerce/products/new"
@@ -113,25 +92,7 @@ function ProductsHeader(props) {
       </motion.div>
 
 
-      <Dialog open={open} onClose={handleClose} className='mui_add_cate_dialo'>
-        <DialogTitle>Add New Category</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Category Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">Cancel</Button>
-          <Button onClick={handleAddCategory} color="primary" variant="contained">Add</Button>
-        </DialogActions>
-      </Dialog>
+    
     </div>
   );
 }

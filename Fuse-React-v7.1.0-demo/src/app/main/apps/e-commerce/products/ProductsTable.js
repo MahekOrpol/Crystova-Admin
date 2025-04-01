@@ -27,7 +27,6 @@ function ProductsTable(props) {
   const searchText = useSelector(
     ({ eCommerceApp }) => eCommerceApp.products.searchText
   );
-
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(products);
@@ -88,6 +87,7 @@ function ProductsTable(props) {
 
   function handleClick(item) {
     dispatch(setSelectedProduct(item)); 
+    localStorage.setItem("isEditMode", true); 
     props.navigate(`/apps/e-commerce/products/details/${item.id}`);
   }
   
