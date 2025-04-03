@@ -79,7 +79,8 @@ function UserNavbarHeader(props) {
           />
         ) : (
           <Avatar className="md:mx-4 w-96 h-96">
-            {admin?.img || user.data.photoURL}
+            {/* {admin?.img || user.data.photoURL} */}
+            {/* {console.log('{ahotoURL} >> ', admin?.img || user.data.photoURL)} */}
           </Avatar>
         )}
       </div>

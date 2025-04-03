@@ -43,8 +43,8 @@ function NavbarStyle1Content(props) {
       <AppBar
         color="primary"
         position="static"
-        className="flex flex-row items-center shrink h-screen px-12 shadow-0"
-        // className="flex flex-row items-center shrink h-screen md:h-64 min-h-48 md:min-h-64 px-12 shadow-0"
+        // className="flex flex-row items-center shrink h-screen px-12 shadow-0"
+        className="flex flex-row items-center shrink h-screen md:h-64 min-h-48 md:min-h-64 px-12 shadow-0"
       >
         <div className="flex flex-1 mx-4">
           <Logo />

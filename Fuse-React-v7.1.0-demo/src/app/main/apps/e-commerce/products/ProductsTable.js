@@ -215,7 +215,7 @@ function ProductsTable(props) {
                             ? `http://localhost:3000${n.image[0]}` // Display first image only
                             : placeholderImg
                         }
-                        alt={n.productName}
+                        alt={n.productName || ''}
                       />
                     </TableCell>
 
@@ -224,7 +224,7 @@ function ProductsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.productName}
+                      {n.productName || ''}
                     </TableCell>
 
                     <TableCell
@@ -232,14 +232,14 @@ function ProductsTable(props) {
                       component="th"
                       scope="row"
                     >
-                      {n.categoryName}
+                      {n.categoryName || ''}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16 truncate"
                       component="th"
                       scope="row"
                     >
-                      {n.gender}
+                      {n.gender || "-"}
                     </TableCell>
 
                     <TableCell
@@ -249,7 +249,7 @@ function ProductsTable(props) {
                       align="right"
                     >
                       <span>₹</span>
-                      {n.regularPrice?.$numberDecimal}
+                      {n.regularPrice?.$numberDecimal || '0'}
                     </TableCell>
 
                     <TableCell
@@ -259,7 +259,7 @@ function ProductsTable(props) {
                       align="right"
                     >
                       <span>₹</span>
-                      {n.salePrice?.$numberDecimal}
+                      {n.salePrice?.$numberDecimal || '0'}
                     </TableCell>
                     <TableCell
                       className="p-4 md:p-16"
@@ -267,7 +267,7 @@ function ProductsTable(props) {
                       scope="row"
                       align="right"
                     >
-                      {n.discount?.$numberDecimal}%
+                      {n.discount?.$numberDecimal || 0}%
                     </TableCell>
 
                     <TableCell
