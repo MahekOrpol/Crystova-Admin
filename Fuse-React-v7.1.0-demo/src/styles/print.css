@@ -9,6 +9,33 @@
     }
 }
 
+.muiltr-k0myhi-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+    color: #5b1b28;
+}
+
+.muiltr-k0myhi-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+    background-color: #804a55
+    ;
+}
+
+tr.MuiTableRow-root.muiltr-to4g25-MuiTableRow-root:hover {
+    background: #dfd1d4;
+}
+
+tr.MuiTableRow-root.muiltr-to4g25-MuiTableRow-root:hover td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+tr.MuiTableRow-root.muiltr-to4g25-MuiTableRow-root:hover td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+thead tr.MuiTableRow-root.muiltr-to4g25-MuiTableRow-root:hover {
+    background: none;
+}
+
 @media print {
     /* html and body tweaks */
     html, body {
