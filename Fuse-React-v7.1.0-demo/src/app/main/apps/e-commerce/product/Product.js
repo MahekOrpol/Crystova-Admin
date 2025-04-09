@@ -73,6 +73,8 @@ function Product(props) {
     // productSize: [],
     resolver: yupResolver(schema),
   });
+ 
+  
   const { reset, watch, control, onChange, formState } = methods;
   const form = watch();
   const [loading, setLoading] = useState(true);
@@ -173,7 +175,7 @@ function Product(props) {
   return (
     <FormProvider {...methods}>
    <Root
-  header={<ProductHeader />}
+  header={<ProductHeader productId={routeParams.productId} />}
   contentToolbar={
     <Box display="flex" alignItems="center" justifyContent="space-between" className="w-full h-64">
       {/* Tabs on the left */}

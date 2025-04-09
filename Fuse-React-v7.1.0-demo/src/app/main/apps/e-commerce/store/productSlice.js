@@ -3,19 +3,6 @@ import axios from "axios";
 import FuseUtils from "@fuse/utils";
 import { useParams } from "react-router-dom";
 
-// export const getProduct = createAsyncThunk(
-//   "eCommerceApp/product/getProduct",
-//   async (params) => {
-//     const productId = params?.["*"];
-//     console.log("getProduct params :>> ", productId);
-//     const response = await axios.get(
-//       `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
-//     );
-//     const data = await response.data;
-//     return data === undefined ? null : data;
-//   }
-// );
-
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
   async ({ productId }) => {
@@ -136,15 +123,22 @@ export const updateProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
-    formData.append("best_selling", productData.bestSelling ? "1" : "0");
+    formData.append("best_selling", productData.bestSelling === "1" ? "1" : "0");
 
-    formData.append(
-      "productSize",
-      Array.isArray(productData.productSize)
-        ? productData.productSize.join(",")
-        : productData.productSize
-    );
-    // formData.append("hasVariations", productData.enableVariations ? "true" : "false");
+    // formData.append(
+    //   "productSize",
+    //   Array.isArray(productData.productSize)
+    //     ? productData.productSize.join(",")
+    //     : productData.productSize
+    // );
+    // const cleanedVariations = productData.productVariations.map((v) => {
+    //   const cleaned = { productSize: v.productSize };
+    //   if (v.regularPrice) cleaned.regularPrice = v.regularPrice;
+    //   if (v.salePrice) cleaned.salePrice = v.salePrice;
+    //   if (v.discount) cleaned.discount = v.discount;
+    //   return cleaned;
+    // });
+ 
     formData.append("sku", productData.sku);
     formData.append("quantity", productData.quantity);
 
@@ -152,27 +146,30 @@ export const updateProduct = createAsyncThunk(
     productData.images?.forEach((img) => {
       formData.append("image", img.file); // Assuming you have img.file as the File object
     });
-
+    
     formData.append(
       "hasVariations",
       productData.hasVariations && productData.productVariations?.length > 0
         ? "true"
         : "false"
     );
-
-    if (
+    
+      if (
       productData.hasVariations &&
       productData.productVariations?.length > 0
     ) {
-      productData.productVariations?.forEach((variation, index) => {
-        formData.append(`variations[${index}]`, JSON.stringify(variation));
-      });
+      formData.append(
+        "variations",
+        JSON.stringify(productData.productVariations)
+      );
+      
     } else {
-      formData.append("variations", "[]"); // Prevent empty variations when disabled
+      formData.append("variations", "[]");
     }
-
+ 
+    
     console.log("Final Payload:", formData);
-
+    
     const response = await axios.put(
       `http://localhost:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
       formData,
@@ -181,6 +178,7 @@ export const updateProduct = createAsyncThunk(
         headers: { "Content-Type": "multipart/form-data" },
       }
     );
+    console.log('response', response)
 
     const data = await response.data;
 
@@ -224,9 +222,33 @@ const productSlice = createSlice({
   extraReducers: {
     // [getProduct.fulfilled]: (state, action) => action.payload,
     [getProduct.fulfilled]: (state, action) => {
-      console.log("Fetched Product:", action.payload);
-      return action.payload;
-    },
+      const payload = action.payload;
+    
+      console.log("Fetched Product:", payload);
+    
+      // Normalize productSize
+      if (
+        payload?.productSize?.length === 1 &&
+        typeof payload.productSize[0] === "string" &&
+        payload.productSize[0].includes(",")
+      ) {
+        payload.productSize = payload.productSize[0].split(",").map((s) => s.trim());
+      }
+    
+      if (payload?.variations?.length) {
+        payload.productVariations = payload.variations?.map((variation) => ({
+          ...variation,
+          regularPrice: variation?.regularPrice?.$numberDecimal ?? variation?.regularPrice ?? "",
+          salePrice: variation?.salePrice?.$numberDecimal ?? variation?.salePrice ?? "",
+          discount: variation?.discount?.$numberDecimal ?? variation?.discount ?? "",
+        })) ?? [];
+        
+
+       
+      }
+      return payload;
+    }
+,
 
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,

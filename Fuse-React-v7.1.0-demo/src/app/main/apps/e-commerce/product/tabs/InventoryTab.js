@@ -17,63 +17,87 @@ function InventoryTab() {
   const [stock, setStock] = useState("");
   const [enableVariations, setEnableVariations] = useState(false);
   const [variations, setVariations] = useState([]);
+  const hasVariations = watch("hasVariations");
 
   const selectedSizes = watch("productSize") || [];
 
-  // useEffect(() => {
-  //   if (enableVariations) {
-  //     const newVariations = selectedSizes.map((size) => {
-  //       return (
-  //         variations.find((v) => v.size === size) || {
-  //           size,
-  //           regularPrice: "",
-  //           salePrice: "",
-  //           discount: "",
-  //         }
-  //       );
-  //     });
-
-  //     // Prevent unnecessary updates by checking if variations have changed
-  //     if (JSON.stringify(newVariations) !== JSON.stringify(variations)) {
-  //       setVariations(newVariations);
-  //       setValue("productVariations", newVariations);
-  //     }
-  //   } else {
-  //     if (variations.length > 0) {
-  //       setVariations([]);
-  //       setValue("productVariations", []);
-  //     }
-  //   }
-  // }, [enableVariations, selectedSizes, setValue]);
-
+  useEffect(() => {
+    if (hasVariations === "true" || hasVariations === true) {
+      setEnableVariations(true);
+    } else {
+      setEnableVariations(false);
+    }
+  }, [hasVariations]);
+  
+  useEffect(() => {
+    const r = watch("regularPrice");
+    const s = watch("salePrice");
+    const d = watch("discount");
+  
+    console.log("Default values before variations:");
+    console.log("Regular Price:", r);
+    console.log("Sale Price:", s);
+    console.log("Discount:", d);
+  }, []);
+  
   useEffect(() => {
     if (enableVariations) {
-      const newVariations = selectedSizes.map((productSize) => {
-        return (
-          variations.find((v) => v.productSize === productSize) || {
-            productSize: productSize,  // Ensure correct key
-            regularPrice: watch("regularPrice") || "",  
-            salePrice: watch("salePrice") || "", 
-            discount: watch("discount") || ""
-          }
-        );
+
+      const variationMap = new Map(
+        variations.map((v) => {
+          console.log("Mapping variation productSize:", v.productSize);
+          return [v.productSize, v];
+        })
+      );
+      
+          // const parseDecimal = (val) => {
+          //   if (typeof val === "object" && val?.$numberDecimal) return val.$numberDecimal;
+          //   return val ?? "";
+          // };
+          const parseDecimal = (val) =>{
+            typeof val === "object" && val?.$numberDecimal ? val.$numberDecimal : val ?? "";
+          return val ?? "";
+        };
+        
+      const newVariations = selectedSizes.map((size) => {
+        const existing = variationMap.get(size);
+        const now = new Date().toISOString(); // current time in ISO format
+      
+        console.log(variationMap)
+        return existing
+          ? {
+              ...existing,
+              regularPrice: parseDecimal(existing.regularPrice),
+              salePrice: parseDecimal(existing.salePrice),
+              discount: parseDecimal(existing.discount),
+              createdAt: existing.createdAt || now // Keep existing or assign new
+            }
+          : {
+              productSize: size,
+              regularPrice: watch("regularPrice") || "",
+              salePrice: watch("salePrice") || "",
+              discount: watch("discount") || "",
+              createdAt: now // Assign new time on creation
+            };
       });
+      
   
       if (JSON.stringify(newVariations) !== JSON.stringify(variations)) {
+        console.log("Updated variations from selectedSizes:", newVariations);
         setVariations(newVariations);
         setValue("productVariations", newVariations);
-        setValue("variations", JSON.stringify(newVariations));  
+        setValue("variations", JSON.stringify(newVariations));
       }
     } else {
       if (variations.length > 0) {
+        console.log("Clearing variations due to disable toggle");
         setVariations([]);
         setValue("productVariations", []);
-        setValue("variations", "[]"); // Send empty array as string
+        setValue("variations", "[]");
       }
     }
-  }, [enableVariations, selectedSizes, setValue, watch]);
+  }, [enableVariations, selectedSizes]);
   
-
   return (
     <div>
       <Controller
@@ -126,7 +150,7 @@ function InventoryTab() {
         control={control}
         render={({ field }) => (
           <Switch
-            checked={field.value}
+            checked={enableVariations}
             onChange={(e) => {
               const isEnabled = e.target.checked;
               field.onChange(isEnabled);
@@ -175,41 +199,49 @@ function InventoryTab() {
           <div key={index} className="flex gap-4 mb-4">
             <TextField label={`Size: ${variation.productSize}`} variant="outlined" disabled />
             <TextField
-              label="Regular Price"
-              type="number"
-              variant="outlined"
-              value={variation.regularPrice}
-              onChange={(e) => {
-                const updated = [...variations];
-                updated[index].regularPrice = e.target.value;
-                setVariations(updated);
-                setValue("productVariations", updated);
-              }}
-            />
-            <TextField
-              label="Sale Price"
-              type="number"
-              variant="outlined"
-              value={variation.salePrice}
-              onChange={(e) => {
-                const updated = [...variations];
-                updated[index].salePrice = e.target.value;
-                setVariations(updated);
-                setValue("productVariations", updated);
-              }}
-            />
-            <TextField
-              label="Discount"
-              type="number"
-              variant="outlined"
-              value={variation.discount}
-              onChange={(e) => {
-                const updated = [...variations];
-                updated[index].discount = e.target.value;
-                setVariations(updated);
-                setValue("productVariations", updated);
-              }}
-            />
+  label="Regular Price"
+  type="number"
+  variant="outlined"
+  value={variation.regularPrice}
+  onChange={(e) => {
+    const updated = variations.map((v, i) =>
+      i === index ? { ...v, regularPrice: e.target.value } : v
+    );
+    console.log(`Regular Price updated for size ${variation.productSize}:`, updated);
+    setVariations(updated);
+    setValue("variations", JSON.stringify(updated));
+  }}
+/>
+
+
+<TextField
+  label="Sale Price"
+  type="number"
+  variant="outlined"
+  value={variation.salePrice}
+  onChange={(e) => {
+    const updated = variations.map((v, i) =>
+      i === index ? { ...v, salePrice: e.target.value } : v
+    );
+    setVariations(updated);
+    setValue("productVariations", updated);
+  }}
+/>
+
+<TextField
+  label="Discount"
+  type="number"
+  variant="outlined"
+  value={variation.discount}
+  onChange={(e) => {
+    const updated = variations.map((v, i) =>
+      i === index ? { ...v, discount: e.target.value } : v
+    );
+    setVariations(updated);
+    setValue("productVariations", updated);
+  }}
+/>
+
           </div>
         ))}
 

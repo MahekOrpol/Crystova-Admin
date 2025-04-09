@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import _ from "@lodash";
 import { saveProduct, removeProduct, updateProduct } from "../store/productSlice";
 import { useEffect, useState } from "react";
@@ -21,12 +21,13 @@ function ProductHeader() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [isEditMode, setIsEditMode] = useState(false);
+  const { productId } = useParams(); // ✅ Get productId from URL
+  const isEditMode = productId !== "new";
 
-  useEffect(() => {
-    const editMode = localStorage.getItem("isEditMode") === "true";
-    setIsEditMode(editMode);
-  }, []);
+  // useEffect(() => {
+  //   const editMode = localStorage.getItem("isEditMode") === "true";
+  //   setIsEditMode(editMode);
+  // }, []);
 
   function handleSaveProduct() {
   dispatch(saveProduct(getValues()))
@@ -38,8 +39,21 @@ function ProductHeader() {
       console.error("Failed to save product", error);
     });
 }
-  function handleUpdateProduct() {
-  dispatch(updateProduct(getValues()))
+//   function handleUpdateProduct() {
+//   dispatch(updateProduct(getValues()))
+//     .unwrap()
+//     .then(() => {
+//       navigate("/apps/e-commerce/products");
+//     })
+//     .catch((error) => {
+//       console.error("Failed to save product", error);
+//     });
+// }
+function handleUpdateProduct() {
+  const values = getValues();
+  console.log("Product values before update:", values); // 👈 Add this line
+
+  dispatch(updateProduct(values))
     .unwrap()
     .then(() => {
       navigate("/apps/e-commerce/products");
@@ -48,6 +62,7 @@ function ProductHeader() {
       console.error("Failed to save product", error);
     });
 }
+
 
   // const handleSaveProduct = async (productData) => {
   //   try {
@@ -143,26 +158,24 @@ function ProductHeader() {
         </Button>
        
         {!isEditMode ? (
-        <Button
-        className="whitespace-nowrap mx-4"
-        variant="contained"
-        color="secondary"
-        // disabled={_.isEmpty(dirtyFields) || !isValid}`
-        onClick={handleSaveProduct}
-      >
-        Save
-      </Button>
-      ) : (
-        <Button
-          className="whitespace-nowrap mx-4"
-          variant="contained"
-          color="secondary"
-          // disabled={_.isEmpty(dirtyFields) || !isValid}`
-          onClick={handleUpdateProduct}
-        >
-          Update
-        </Button>
-      )}
+          <Button
+            className="whitespace-nowrap mx-4"
+            variant="contained"
+            color="secondary"
+            onClick={handleSaveProduct}
+          >
+            Save
+          </Button>
+        ) : (
+          <Button
+            className="whitespace-nowrap mx-4"
+            variant="contained"
+            color="secondary"
+            onClick={handleUpdateProduct}
+          >
+            Update
+          </Button>
+        )}
       </motion.div>
     </div>
   );
