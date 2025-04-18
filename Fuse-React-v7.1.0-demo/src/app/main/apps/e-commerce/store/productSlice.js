@@ -11,7 +11,7 @@ export const getProduct = createAsyncThunk(
     if (!productId) throw new Error("Product ID is missing!");
 
     const response = await axios.get(
-      `http://localhost:3000/api/v1/product/getSingleProduct/${productId}`
+      `http://147.93.104.196:3000/api/v1/product/getSingleProduct/${productId}`
     );
 
     return response.data || null;
@@ -54,9 +54,12 @@ export const saveProduct = createAsyncThunk(
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
-        ? productData.productSize.join(",")
-        : productData.productSize
+        ? productData.productSize.length > 0
+          ? productData.productSize.join(",")
+          : "[]"
+        : productData.productSize || "[]"
     );
+    
     // formData.append("hasVariations", productData.enableVariations ? "true" : "false");
     formData.append("sku", productData.sku);
     formData.append("quantity", productData.quantity);
@@ -86,7 +89,7 @@ export const saveProduct = createAsyncThunk(
 
     console.log("Final Payload:", formData);
     const response = await axios.post(
-      "http://localhost:3000/api/v1/product/create",
+      "http://147.93.104.196:3000/api/v1/product/create",
       formData,
       {
         ...product,
@@ -115,6 +118,16 @@ export const updateProduct = createAsyncThunk(
         ? productData.categoryName.map((cat) => cat.categoryName).join(",")
         : productData.categoryName
     );
+
+    formData.append(
+      "productSize",
+      Array.isArray(productData.productSize)
+        ? productData.productSize.length > 0
+          ? productData.productSize.join(",")
+          : "[]"
+        : productData.productSize || "[]"
+    );
+    
 
     formData.append("productName", productData.productName);
     formData.append("productsDescription", productData.productsDescription);
@@ -171,7 +184,7 @@ export const updateProduct = createAsyncThunk(
     console.log("Final Payload:", formData);
     
     const response = await axios.put(
-      `http://localhost:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
+      `http://147.93.104.196:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
       formData,
       {
         ...product,

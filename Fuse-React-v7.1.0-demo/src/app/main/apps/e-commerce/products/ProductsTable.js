@@ -203,7 +203,7 @@ function ProductsTable(props) {
                       className="w-full block rounded"
                       src={
                         n.image
-                          ? `http://localhost:3000${n.image}`
+                          ? `http://147.93.104.196:3000${n.image}`
                           : placeholderImg
                       }
                       alt={n.productName}
@@ -212,7 +212,7 @@ function ProductsTable(props) {
                         className="w-full block rounded"
                         src={
                           n.image && n.image.length > 0
-                            ? `http://localhost:3000${n.image[0]}` // Display first image only
+                            ? `http://147.93.104.196:3000${n.image[0]}` // Display first image only
                             : placeholderImg
                         }
                         alt={n.productName || ''}

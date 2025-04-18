@@ -111,6 +111,13 @@ const navigationConfig = [
         url: "product/wishlist",
       },
       {
+        id: "ui-typography",
+        title: "Customer",
+        type: "item",
+        icon: <FaUsers />,
+        url: "users",
+      },
+      {
         id: "user-interface",
         title: "User Interface",
         type: "group",
@@ -123,13 +130,7 @@ const navigationConfig = [
             icon: <ImUsers />,
             url: "admin-user",
           },
-          {
-            id: "ui-typography",
-            title: "Users",
-            type: "item",
-            icon: <FaUsers />,
-            url: "users",
-          },
+         
           // {
           //   id: 'helper-classes',
           //   title: 'Wishlist',

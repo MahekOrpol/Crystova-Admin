@@ -22,7 +22,7 @@ function DevelopmentServerDoc() {
 
       <Typography className="mb-16" component="p">
         You can check out your console application to get further information about the server. By
-        default, it will run on <b>http://localhost:3000</b> but it might change depending on your
+        default, it will run on <b>http://147.93.104.196:3000</b> but it might change depending on your
         setup.
       </Typography>
 

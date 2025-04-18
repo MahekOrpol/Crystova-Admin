@@ -35,7 +35,7 @@ function TypographyUI() {
 
   const getUser = async () => {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/register/get"
+      "http://147.93.104.196:3000/api/v1/register/get"
     );
     setUser(response.data);
   };
@@ -73,14 +73,14 @@ function TypographyUI() {
                 chevron_right
               </Icon>
               <Typography color="textSecondary" className="font-medium">
-                User Interface
+                Customer Interface
               </Typography>
             </div>
             <Typography
               variant="h6"
               className="text-18 sm:text-24 font-semibold"
             >
-              Users
+              Customer
             </Typography>
           </div>
 

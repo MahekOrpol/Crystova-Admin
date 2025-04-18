@@ -37,8 +37,8 @@ function ProductsTab() {
               <td className="w-80">
                 <img
                   className="product-image"
-                  // src={`http://localhost:3000${product?.productId?.image[0]}`}
-                  src={`http://localhost:3000${product?.productId?.image?.[0] || ""}`}
+                  // src={`http://147.93.104.196:3000${product?.productId?.image[0]}`}
+                  src={`http://147.93.104.196:3000${product?.productId?.image?.[0] || ""}`}
                   alt={product?.productId?.productName || "Product"}
                   // alt="product"
                 />

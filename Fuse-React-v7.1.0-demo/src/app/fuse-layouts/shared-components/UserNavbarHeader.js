@@ -33,7 +33,7 @@ function UserNavbarHeader(props) {
 
   const getAdmin = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/v1/admin/get");
+      const res = await axios.get("http://147.93.104.196:3000/api/v1/admin/get");
       const storedAdminId = localStorage.getItem("adminId"); // Get admin ID from localStorage
 
       // Find the admin whose id matches localStorage adminId

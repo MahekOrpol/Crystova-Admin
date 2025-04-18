@@ -20,13 +20,13 @@ import { useEffect, useState } from "react";
 
 function HelperClassesUI() {
   const [user, setUser] = useState([]);
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const getAllWishlist = async () => {
     const response = await axios.get(
-      "http://crystova.cloudbusiness.cloud/api/v1/wishlist/admin/wishlists"
+      "http://147.93.104.196:3000/api/v1/wishlist/admin/wishlists"
     );
     setUser(response.data.data);
   };
@@ -43,7 +43,7 @@ function HelperClassesUI() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   }
-  const baseURL = "http://crystova.cloudbusiness.cloud";
+  const baseURL = "http://147.93.104.196:3000";
 
   return (
     <FusePageSimple
@@ -87,7 +87,7 @@ function HelperClassesUI() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {/* {user
+                  {/* {user
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index, array) => (
                       <TableRow
@@ -100,8 +100,9 @@ function HelperClassesUI() {
                       > */}
                   {user
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => (
-                      <TableRow key={row.id} >
+                    .map((row, index) => 
+                      row?.productId !== null && (
+                      <TableRow key={row.id}>
                         <TableCell>
                           {Array.isArray(row?.productId?.image) ? (
                             <img
@@ -116,7 +117,7 @@ function HelperClassesUI() {
                             />
                           ) : (
                             <img
-                              src={`${baseURL}${row.productId.image}`}
+                              src={`${baseURL}${row?.productId?.image}`}
                               alt="Product"
                               style={{
                                 width: "80px",
@@ -126,43 +127,52 @@ function HelperClassesUI() {
                             />
                           )}
                         </TableCell>
+
+                          <TableCell>
+                            {row?.productId?.productName || "-"}
+                          </TableCell>
+
                         <TableCell>
-                          {row?.productId?.productName || "-"}
+                          {row?.productId?.categoryName} {console.log(row)}
                         </TableCell>
-                        <TableCell>{row?.productId.categoryName}</TableCell>
-                        <TableCell><span>₹</span> {row?.productId.salePrice?.$numberDecimal}</TableCell>
+                        <TableCell>
+                          <span>₹</span>{" "}
+                          {row?.productId?.salePrice?.$numberDecimal}
+                        </TableCell>
                         <TableCell>{row?.user?.name}</TableCell>
                         <TableCell>{row?.user?.email}</TableCell>
                         <TableCell>
-  {new Date(row.createdAt).toLocaleString('en-GB', {
-    day: '2-digit',
-    month: 'short', // This gives "Jan", "Feb", etc.
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).replace(',', ' at')}
-</TableCell>
-
+                          {new Date(row.createdAt)
+                            .toLocaleString("en-GB", {
+                              day: "2-digit",
+                              month: "short", // This gives "Jan", "Feb", etc.
+                              hour: "numeric",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            .replace(",", " at")}
+                        </TableCell>
                       </TableRow>
+
                     ))}
                 </TableBody>
               </Table>
             </CardContent>
-          <TablePagination
-            className="shrink-0 border-t-1"
-            component="div"
-            count={user.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-              "aria-label": "Previous Page",
-            }}
-            nextIconButtonProps={{
-              "aria-label": "Next Page",
-            }}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+            <TablePagination
+              className="shrink-0 border-t-1"
+              component="div"
+              count={user.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                "aria-label": "Previous Page",
+              }}
+              nextIconButtonProps={{
+                "aria-label": "Next Page",
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Card>
         </div>
       }

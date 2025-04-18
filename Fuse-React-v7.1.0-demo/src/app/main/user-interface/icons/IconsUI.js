@@ -25,7 +25,7 @@ function IconsUI() {
 
   const getUser = async () => {
     const response = await axios.get(
-      "http://localhost:3000/api/v1/admin/get"
+      "http://147.93.104.196:3000/api/v1/admin/get"
     );
     setUser(response.data);
   };

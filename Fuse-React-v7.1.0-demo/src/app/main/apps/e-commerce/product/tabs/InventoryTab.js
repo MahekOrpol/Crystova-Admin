@@ -40,6 +40,7 @@ function InventoryTab() {
     console.log("Discount:", d);
   }, []);
   
+  
   useEffect(() => {
     if (enableVariations) {
 
@@ -58,6 +59,8 @@ function InventoryTab() {
             typeof val === "object" && val?.$numberDecimal ? val.$numberDecimal : val ?? "";
           return val ?? "";
         };
+
+        
         
       const newVariations = selectedSizes.map((size) => {
         const existing = variationMap.get(size);
