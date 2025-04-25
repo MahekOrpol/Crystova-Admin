@@ -26,7 +26,7 @@ function HelperClassesUI() {
 
   const getAllWishlist = async () => {
     const response = await axios.get(
-      "http://147.93.104.196:3000/api/v1/wishlist/admin/wishlists"
+      "https://dev.crystovajewels.com/api/v1/wishlist/admin/wishlists"
     );
     setUser(response.data.data);
   };
@@ -43,7 +43,7 @@ function HelperClassesUI() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   }
-  const baseURL = "http://147.93.104.196:3000";
+  const baseURL = "https://dev.crystovajewels.com";
 
   return (
     <FusePageSimple

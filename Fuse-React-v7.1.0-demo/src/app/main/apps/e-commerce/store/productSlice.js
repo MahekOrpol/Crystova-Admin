@@ -11,7 +11,7 @@ export const getProduct = createAsyncThunk(
     if (!productId) throw new Error("Product ID is missing!");
 
     const response = await axios.get(
-      `http://147.93.104.196:3000/api/v1/product/getSingleProduct/${productId}`
+      `https://dev.crystovajewels.com/api/v1/product/getSingleProduct/${productId}`
     );
 
     return response.data || null;
@@ -89,7 +89,7 @@ export const saveProduct = createAsyncThunk(
 
     console.log("Final Payload:", formData);
     const response = await axios.post(
-      "http://147.93.104.196:3000/api/v1/product/create",
+      "https://dev.crystovajewels.com/api/v1/product/create",
       formData,
       {
         ...product,
@@ -184,7 +184,7 @@ export const updateProduct = createAsyncThunk(
     console.log("Final Payload:", formData);
     
     const response = await axios.put(
-      `http://147.93.104.196:3000/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
+      `https://dev.crystovajewels.com/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
       formData,
       {
         ...product,

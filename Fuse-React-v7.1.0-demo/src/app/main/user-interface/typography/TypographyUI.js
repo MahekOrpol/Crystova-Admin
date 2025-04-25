@@ -35,7 +35,7 @@ function TypographyUI() {
 
   const getUser = async () => {
     const response = await axios.get(
-      "http://147.93.104.196:3000/api/v1/register/get"
+      "https://dev.crystovajewels.com/api/v1/register/get"
     );
     setUser(response.data);
   };

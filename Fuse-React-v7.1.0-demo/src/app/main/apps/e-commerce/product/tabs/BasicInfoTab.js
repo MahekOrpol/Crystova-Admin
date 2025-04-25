@@ -29,7 +29,7 @@ function BasicInfoTab({ product }) {
   const getCategories = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.104.196:3000/api/v1/category/get"
+        "https://dev.crystovajewels.com/api/v1/category/get"
       );
       console.log(response.data);
       setCategories(
