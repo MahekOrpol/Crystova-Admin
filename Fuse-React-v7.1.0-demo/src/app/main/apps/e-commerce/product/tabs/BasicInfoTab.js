@@ -4,7 +4,6 @@ import { useFormContext, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 function BasicInfoTab({ product }) {
   const methods = useFormContext();
   const {
@@ -13,7 +12,6 @@ function BasicInfoTab({ product }) {
     formState: { errors },
   } = methods;
   const [categories, setCategories] = useState([]);
-
   useEffect(() => {
     if (product && categories.length) {
       const matchedCategories = categories.filter((cat) =>
@@ -25,36 +23,45 @@ function BasicInfoTab({ product }) {
       });
     }
   }, [product, categories, reset]);
-
-  const getCategories = async () => {
-    try {
-      const response = await axios.get(
-        "https://dev.crystovajewels.com/api/v1/category/get"
-      );
-      console.log(response.data);
-      setCategories(
-        Array.isArray(response.data)
-          ? response.data
-          : response.data.categories || []
-      );
-
-      // setCategories(
-      //   Array.isArray(response.data.categories) ? response.data.categories : []
-      // );
-      // setCategories(Array.isArray(response.data) ? response.data : response.data.categories || []);
-      // const fetchedCategories = response.data?.categories;
-      // setCategories(Array.isArray(fetchedCategories) ? fetchedCategories : []);
-      // setCategories(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-      setCategories([]); // ✅ Fallback to empty array on error
-    }
-  };
-
   useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(
+          "https://dev.crystovajewels.com/api/v1/category/get"
+        );
+        const rawCategories = Array.isArray(response.data)
+          ? response.data
+          : response.data.categories || [];
+        const flattened = [];
+        rawCategories.forEach((cat) => {
+          // Add category
+          flattened.push({
+            id: cat.id,
+            type: "Category",
+            categoryName: cat.categoryName,
+            displayName: cat.categoryName,
+            isCategory: true
+          });
+          // Add its subcategories right after
+          (cat.subcategories || []).forEach((sub) => {
+            flattened.push({
+              id: sub._id,
+              type: "Subcategory",
+              categoryName: `${cat.categoryName}  ${sub.subcategoryName}`,
+              displayName: ` ${sub.subcategoryName}`,
+              parentCategory: cat.categoryName,
+              isSubcategory: true
+            });
+          });
+        });
+        setCategories(flattened);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setCategories([]);
+      }
+    };
     getCategories();
   }, []);
-
   return (
     <div>
       <Controller
@@ -75,7 +82,6 @@ function BasicInfoTab({ product }) {
           />
         )}
       />
-
       <Controller
         name="productsDescription"
         control={control}
@@ -93,28 +99,32 @@ function BasicInfoTab({ product }) {
           />
         )}
       />
-
       <Controller
         name="categoryName"
         control={control}
-        defaultValue={[]} // Ensure default is always an array
+        defaultValue={[]}
         render={({ field: { onChange, value } }) => {
-          console.log("Categories:", categories); // Log categories from API
-          console.log("Selected Categories:", value); // Log selected values
-
           return (
             <Autocomplete
               className="mt-8 mb-16"
               multiple
-              options={categories || []} // ✅ Ensure API data is used
-              getOptionLabel={(option) => option?.categoryName || ""} // ✅ Correct label field
-              isOptionEqualToValue={(option, value) => option?.id === value?.id} // ✅ Proper ID matching
+              options={categories}
+              getOptionLabel={(option) => option?.displayName || ""}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
               value={Array.isArray(value) ? value : []}
               onChange={(event, newValue) => onChange(newValue)}
+              renderOption={(props, option) => (
+                <li {...props} style={{
+                  paddingLeft: option.isSubcategory ? '48px' : '16px',
+                  backgroundColor: option.isSubcategory ? '#F5F5F5' : 'white'
+                }}>
+                  {option.displayName}
+                </li>
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  placeholder="Select multiple categories"
+                  placeholder="Select categories or subcategories"
                   label="Category Name"
                   variant="outlined"
                   InputLabelProps={{ shrink: true }}
@@ -124,7 +134,6 @@ function BasicInfoTab({ product }) {
           );
         }}
       />
-
       <Controller
         name="tags"
         control={control}
@@ -156,5 +165,9 @@ function BasicInfoTab({ product }) {
     </div>
   );
 }
-
 export default BasicInfoTab;
+
+
+
+
+
