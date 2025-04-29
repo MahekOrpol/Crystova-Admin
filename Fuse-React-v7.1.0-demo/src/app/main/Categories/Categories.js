@@ -30,11 +30,9 @@ const baseURL = "https://dev.crystovajewels.com";
 
 function Categories() {
   const [categories, setCategories] = useState([]);
-  const [categoryImage, setCategoryImage] = useState(null);
   const [categoryName, setCategoryName] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [previewImage, setPreviewImage] = useState(null);
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -73,9 +71,12 @@ function Categories() {
   const getSubcategories = async (categoryId) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/v1/category/getsub/${categoryId}`
+        `${baseURL}/api/v1/category/getsub/${categoryId}`
       );
-      setSubcategories((prev) => ({ ...prev, [categoryId]: response.data }));
+      setSubcategories((prev) => ({
+        ...prev,
+        [categoryId]: response.data.subcategories || [],
+      }));
     } catch (err) {
       console.error("Failed to fetch subcategories", err);
     }
@@ -86,19 +87,15 @@ function Categories() {
       setEditMode(true);
       setSelectedCategory(category);
       setCategoryName(category.categoryName);
-      setPreviewImage(`${baseURL}${category.categoryImage}`);
     } else {
       setEditMode(false);
       setSelectedCategory(null);
       setCategoryName("");
-      setPreviewImage(null);
-      setCategoryImage(null);
     }
     setOpen(true);
   };
 
   const handleClose = () => setOpen(false);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setCategoryImage(file);
@@ -148,6 +145,18 @@ function Categories() {
     getAllCategories();
   };
 
+  const deletesubCategories = async (subcategoryId, categoryId) => {
+    try {
+      await axios.delete(
+        `${baseURL}/api/v1/category/${categoryId}/subcategory/${subcategoryId}`
+      );
+      // Refresh subcategories after deletion
+      await getSubcategories(categoryId);
+    } catch (error) {
+      console.error("Failed to delete subcategory:", error);
+    }
+  };
+
   const handleSubcategoryImageChange = (e) => {
     const file = e.target.files[0];
     setSubcategoryImage(file);
@@ -162,21 +171,21 @@ function Categories() {
     if (!subcategoryName.trim() || !currentCategoryId) return;
 
     const formData = new FormData();
-    formData.append("subCategoryName", subcategoryName.trim());
+    formData.append("subcategoryName", subcategoryName.trim());
     if (subcategoryImage) {
       formData.append("subcategoryImage", subcategoryImage);
     }
 
     try {
       await axios.post(
-        `http://localhost:3000/api/v1/category/create/${currentCategoryId}/subcategory`,
+        `${baseURL}/api/v1/category/create/${currentCategoryId}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
-      getSubcategories(currentCategoryId); // refresh
+      await getSubcategories(currentCategoryId); // refresh
       handleCloseSubModal();
     } catch (error) {
       console.error("Failed to save subcategory:", error);
@@ -261,11 +270,11 @@ function Categories() {
                                 onClick={() => toggleSubcategory(category.id)}
                                 style={{ cursor: "pointer" }}
                               >
-                                {expandedRows[category.id] ? (
+                                {/* {expandedRows[category.id] ? (
                                   <IoIosArrowDown />
                                 ) : (
                                   <IoIosArrowForward />
-                                )}
+                                )} */}
                                 &nbsp;
                                 <img
                                   src={`${baseURL}${category.categoryImage}`}
@@ -304,11 +313,13 @@ function Categories() {
                                 </div>
                               </TableCell>
                             </TableRow>
-                            <TableRow key={category.id}
-  onClick={() => {
-    toggleSubcategory(category.id);
-    setCurrentCategoryId(category.id); // Ensure the current category ID is set
-  }}>
+                            <TableRow
+                              key={category.id}
+                              onClick={() => {
+                                toggleSubcategory(category.id);
+                                setCurrentCategoryId(category.id); // Ensure the current category ID is set
+                              }}
+                            >
                               <TableCell
                                 colSpan={4}
                                 style={{ paddingBottom: 0, paddingTop: 0 }}
@@ -332,53 +343,54 @@ function Categories() {
                                         +
                                       </Button>
                                     </Typography>
-                                    {subcategories[category.id]?.length ? (
-  <Table size="small">
-    <TableHead>
-      <TableRow>
-        <TableCell>Image</TableCell>
-        <TableCell>Name</TableCell>
-        <TableCell>Created At</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {subcategories[category.id].map((sub) => (
-        <TableRow key={sub.id}>
-          <TableCell>
-            {sub.subcategoryImage ? (
-              <img
-                src={`${baseURL}${sub.subcategoryImage}`}
-                alt={sub.subCategoryName}
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              "No image"
-            )}
-          </TableCell>
-          <TableCell>{sub.subCategoryName}</TableCell>
-          <TableCell>
-            {new Date(sub.createdAt).toLocaleString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              hour: "numeric",
-              minute: "2-digit",
-              hour12: true,
-            }).replace(",", " at")}
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
-) : (
-  <Typography variant="body2" color="textSecondary">
-    No subcategories found.
-  </Typography>
-)}
-
+                                    {subcategories[category.id]?.length > 0 ? (
+                                      <Table size="small">
+                                       
+                                        <TableBody>
+                                          {subcategories[category.id].map(
+                                            (sub) => (
+                                              <TableRow key={sub._id}>
+                                                <TableCell>
+                                                  {sub.subcategoryName}
+                                                </TableCell>
+                                                {/* <TableCell>
+                                                  {new Date(sub.createdAt)
+                                                    .toLocaleString("en-GB", {
+                                                      day: "2-digit",
+                                                      month: "short",
+                                                      hour: "numeric",
+                                                      minute: "2-digit",
+                                                      hour12: true,
+                                                    })
+                                                    .replace(",", " at")}
+                                                </TableCell> */}
+                                                <TableCell>
+                                                 
+                                                    <FaTrash
+                                                      size={18}
+                                                      onClick={() =>
+                                                        deletesubCategories(
+                                                          sub._id,
+                                                          category.id
+                                                        )
+                                                      }
+                                                      className="ioscsdc"
+                                                    />
+                                               
+                                                </TableCell>
+                                              </TableRow>
+                                            )
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    ) : (
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                      >
+                                        No subcategories found.
+                                      </Typography>
+                                    )}
                                   </div>
                                 </Collapse>
                               </TableCell>
@@ -417,26 +429,6 @@ function Categories() {
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
-          {(editMode && selectedCategory?.categoryImage) || previewImage ? (
-            <img
-              src={
-                previewImage || `${baseURL}${selectedCategory?.categoryImage}`
-              }
-              alt="Preview"
-              style={{
-                width: "100px",
-                height: "100px",
-                marginTop: "10px",
-                objectFit: "cover",
-              }}
-            />
-          ) : null}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ marginTop: "10px" }}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -462,24 +454,7 @@ function Categories() {
             value={subcategoryName}
             onChange={(e) => setSubcategoryName(e.target.value)}
           />
-          {previewSubImage && (
-            <img
-              src={previewSubImage}
-              alt="Preview"
-              style={{
-                width: "100px",
-                height: "100px",
-                marginTop: "10px",
-                objectFit: "cover",
-              }}
-            />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleSubcategoryImageChange}
-            style={{ marginTop: "10px" }}
-          />
+         
         </DialogContent>
 
         <DialogActions>
