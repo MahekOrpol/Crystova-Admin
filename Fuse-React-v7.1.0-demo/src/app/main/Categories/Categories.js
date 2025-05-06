@@ -25,7 +25,7 @@ import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import "./index.css";
-
+// https://dev.crystovajewels.com
 const baseURL = "https://dev.crystovajewels.com";
 
 function Categories() {
