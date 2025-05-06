@@ -38,7 +38,8 @@ function Categories() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
   const [subcategories, setSubcategories] = useState({}); // key: categoryId, value: subcategories[]
-
+  const [previewImage, setPreviewImage] = useState(null);
+  const [categoryImage, setCategoryImage] = useState(null);
   const [openSubModal, setOpenSubModal] = useState(false);
   const [subcategoryName, setSubcategoryName] = useState("");
   const [currentCategoryId, setCurrentCategoryId] = useState(null);
@@ -302,12 +303,12 @@ function Categories() {
                                 <div style={{ display: "flex", gap: "1rem" }}>
                                   <FaEdit
                                     size={18}
-                                    onClick={() => handleOpen(row)}
+                                    onClick={() => handleOpen(category)}
                                     className="ioscsdc"
                                   />
                                   <FaTrash
                                     size={18}
-                                    onClick={() => deleteCategories(row.id)}
+                                    onClick={() => deleteCategories(category.id)}
                                     className="ioscsdc"
                                   />
                                 </div>
@@ -345,7 +346,6 @@ function Categories() {
                                     </Typography>
                                     {subcategories[category.id]?.length > 0 ? (
                                       <Table size="small">
-                                       
                                         <TableBody>
                                           {subcategories[category.id].map(
                                             (sub) => (
@@ -365,18 +365,16 @@ function Categories() {
                                                     .replace(",", " at")}
                                                 </TableCell> */}
                                                 <TableCell>
-                                                 
-                                                    <FaTrash
-                                                      size={18}
-                                                      onClick={() =>
-                                                        deletesubCategories(
-                                                          sub._id,
-                                                          category.id
-                                                        )
-                                                      }
-                                                      className="ioscsdc"
-                                                    />
-                                               
+                                                  <FaTrash
+                                                    size={18}
+                                                    onClick={() =>
+                                                      deletesubCategories(
+                                                        sub._id,
+                                                        category.id
+                                                      )
+                                                    }
+                                                    className="ioscsdc"
+                                                  />
                                                 </TableCell>
                                               </TableRow>
                                             )
@@ -429,14 +427,38 @@ function Categories() {
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
+          {(editMode && selectedCategory?.categoryImage) || previewImage ? (
+            <img
+              src={
+                previewImage || `${baseURL}${selectedCategory?.categoryImage}`
+              }
+              alt="Category Preview"
+              style={{
+                width: "100px",
+                height: "100px",
+                marginTop: "10px",
+                objectFit: "cover",
+              }}
+            />
+          ) : null}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ marginTop: "10px" }}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
           <Button
             onClick={handleSaveCategory}
-            variant="contained"
             color="primary"
+            variant="contained"
           >
+            {" "}
             {editMode ? "Update" : "Add"}
           </Button>
         </DialogActions>
@@ -454,7 +476,6 @@ function Categories() {
             value={subcategoryName}
             onChange={(e) => setSubcategoryName(e.target.value)}
           />
-         
         </DialogContent>
 
         <DialogActions>

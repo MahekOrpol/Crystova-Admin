@@ -40,14 +40,14 @@ const rows = [
   },
   {
     id: 'totalPrice',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Total Price',
     sort: true,
   },
   {
     id: 'totalDiscount',
-    align: 'right',
+    align: 'left',
     disablePadding: false,
     label: 'Total Discount',
     sort: true,
@@ -60,11 +60,11 @@ const rows = [
     sort: true,
   },
   {
-    id: 'status',
+    id: 'print',
     align: 'left',
     disablePadding: false,
-    label: 'Status',
-    sort: true,
+    label: 'Print',
+    sort: false,
   },
 ];
 

@@ -1,42 +1,17 @@
 import _ from '@lodash';
 import clsx from 'clsx';
+import { IoPrint } from 'react-icons/io5';
+import { LuDownload } from "react-icons/lu";
 
-export const orderStatuses = [
-  { id: 1, name: 'Awaiting check payment', color: 'bg-blue text-white' },
-  { id: 2, name: 'Payment accepted', color: 'bg-green text-white' },
-  { id: 3, name: 'Preparing the order', color: 'bg-orange text-black' },
-  { id: 4, name: 'Shipped', color: 'bg-purple text-white' },
-  { id: 5, name: 'Delivered', color: 'bg-green-700 text-white' },
-  { id: 6, name: 'Canceled', color: 'bg-pink text-white' },
-  { id: 7, name: 'Refunded', color: 'bg-red text-white' },
-  { id: 8, name: 'Payment error', color: 'bg-red-700 text-white' },
-  { id: 9, name: 'On pre-order (paid)', color: 'bg-purple-300 text-white' },
-  { id: 10, name: 'Awaiting bank wire payment', color: 'bg-blue text-white' },
-  { id: 11, name: 'Awaiting PayPal payment', color: 'bg-blue-700 text-white' },
-  { id: 12, name: 'Remote payment accepted', color: 'bg-green-800 text-white' },
-  { id: 13, name: 'On pre-order (not paid)', color: 'bg-purple-700 text-white' },
-  { id: 14, name: 'Awaiting Cash-on-delivery payment', color: 'bg-blue-800 text-white' },
-];
-
-function OrdersStatus({ status }) {
-  const safeStatus = typeof status === 'string' ? status.toLowerCase() : '';
-
-  const statusEntry =
-    _.find(orderStatuses, (s) =>
-      s.name.toLowerCase().includes(safeStatus)
-    ) || {
-      name: _.startCase(status) || 'Unknown',
-      color: 'bg-gray-300 text-black'
-    };
+function OrdersStatus() {
+  
 
   return (
     <div
-      className={clsx(
-        'inline text-12 font-semibold py-4 px-12 rounded-full truncate',
-        statusEntry.color
-      )}
+      className='inline text-12 font-semibold py-4 px-12 rounded-full truncate flex align-items-center' style={{gap:'10px'}}
     >
-      {statusEntry.name}
+<IoPrint size={22}/>
+<LuDownload size={22}/>
     </div>
   );
 }

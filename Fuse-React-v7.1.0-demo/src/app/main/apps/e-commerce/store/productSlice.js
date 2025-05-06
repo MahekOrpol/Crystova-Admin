@@ -2,45 +2,38 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import FuseUtils from "@fuse/utils";
 import { useParams } from "react-router-dom";
-
 export const getProduct = createAsyncThunk(
   "eCommerceApp/product/getProduct",
   async ({ productId }) => {
     // Use object destructuring
     console.log("getProduct params :>> ", productId);
     if (!productId) throw new Error("Product ID is missing!");
-
     const response = await axios.get(
       `https://dev.crystovajewels.com/api/v1/product/getSingleProduct/${productId}`
     );
-
     return response.data || null;
   }
 );
-
 export const removeProduct = createAsyncThunk(
   "eCommerceApp/product/removeProduct",
   async (val, { dispatch, getState }) => {
     const { id } = getState().eCommerceApp.product;
     await axios.post("/api/e-commerce-app/remove-product", { id });
-
     return id;
   }
 );
-
 export const saveProduct = createAsyncThunk(
   "eCommerceApp/product/saveProduct",
   async (productData, { dispatch, getState }) => {
     const { product } = getState().eCommerceApp;
-    console.log("productData", productData);
     const formData = new FormData();
+    // Append basic product data
     formData.append(
       "categoryName",
       Array.isArray(productData.categoryName)
         ? productData.categoryName.map((cat) => cat.categoryName).join(",")
         : productData.categoryName
     );
-
     formData.append("productName", productData.productName);
     formData.append("productsDescription", productData.productsDescription);
     formData.append("regularPrice", productData.priceTaxIncl);
@@ -48,9 +41,13 @@ export const saveProduct = createAsyncThunk(
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
     formData.append("discount", productData.disRate);
-    // formData.append("best_selling", productData.bestSelling ? "1" : "0");
-    formData.append("best_selling", productData.bestSelling === "1" ? "1" : "0");
-
+    formData.append(
+      "best_selling",
+      productData.bestSelling === "1" ? "1" : "0"
+    );
+    formData.append("sku", productData.sku);
+    formData.append("quantity", productData.quantity);
+    // Handle product sizes
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
@@ -59,22 +56,13 @@ export const saveProduct = createAsyncThunk(
           : "[]"
         : productData.productSize || "[]"
     );
-    
-    // formData.append("hasVariations", productData.enableVariations ? "true" : "false");
-    formData.append("sku", productData.sku);
-    formData.append("quantity", productData.quantity);
-       // Append each image file
-    productData.images?.forEach((img) => {
-      formData.append("image", img.file); // Assuming you have img.file as the File object
-    });
-
+    // Handle variations
     formData.append(
       "hasVariations",
       productData.hasVariations && productData.productVariations?.length > 0
         ? "true"
         : "false"
     );
-
     if (
       productData.hasVariations &&
       productData.productVariations?.length > 0
@@ -84,9 +72,24 @@ export const saveProduct = createAsyncThunk(
         JSON.stringify(productData.productVariations)
       );
     } else {
-      formData.append("variations", "[]"); // Prevent empty variations when disabled
+      formData.append("variations", "[]");
     }
-
+    // Handle images
+    if (productData.images && Array.isArray(productData.images)) {
+      // Handle new image uploads
+      productData.images.forEach((img, index) => {
+        if (img.file && !img.isExisting) {
+          formData.append(`image`, img.file);
+        }
+      });
+      // Handle existing images paths
+      const existingImages = productData.images
+        .filter((img) => img.isExisting)
+        .map((img) => img.path);
+      if (existingImages.length > 0) {
+        formData.append("existingImages", JSON.stringify(existingImages));
+      }
+    }
     console.log("Final Payload:", formData);
     const response = await axios.post(
       "https://dev.crystovajewels.com/api/v1/product/create",
@@ -99,26 +102,36 @@ export const saveProduct = createAsyncThunk(
         },
       }
     );
-
     const data = await response.data;
-
     return data;
   }
 );
-
 export const updateProduct = createAsyncThunk(
   "eCommerceApp/product/updateProduct",
   async (productData, { dispatch, getState }) => {
     const { product } = getState().eCommerceApp;
-    console.log("productData", productData);
     const formData = new FormData();
+    // Append basic product data
     formData.append(
       "categoryName",
       Array.isArray(productData.categoryName)
         ? productData.categoryName.map((cat) => cat.categoryName).join(",")
         : productData.categoryName
     );
-
+    formData.append("productName", productData.productName);
+    formData.append("productsDescription", productData.productsDescription);
+    formData.append("regularPrice", productData.priceTaxIncl);
+    formData.append("salePrice", productData.salePriceTaxIncl);
+    formData.append("stock", productData.stock);
+    formData.append("gender", productData.gender);
+    formData.append("discount", productData.disRate);
+    formData.append(
+      "best_selling",
+      productData.bestSelling === "1" ? "1" : "0"
+    );
+    formData.append("sku", productData.sku);
+    formData.append("quantity", productData.quantity);
+    // Handle product sizes
     formData.append(
       "productSize",
       Array.isArray(productData.productSize)
@@ -127,47 +140,14 @@ export const updateProduct = createAsyncThunk(
           : "[]"
         : productData.productSize || "[]"
     );
-    
-
-    formData.append("productName", productData.productName);
-    formData.append("productsDescription", productData.productsDescription);
-    formData.append("regularPrice", productData.priceTaxIncl);
-    formData.append("salePrice", productData.salePriceTaxIncl);
-    formData.append("stock", productData.stock);
-    formData.append("gender", productData.gender);
-    formData.append("discount", productData.disRate);
-    formData.append("best_selling", productData.bestSelling === "1" ? "1" : "0");
-
-    // formData.append(
-    //   "productSize",
-    //   Array.isArray(productData.productSize)
-    //     ? productData.productSize.join(",")
-    //     : productData.productSize
-    // );
-    // const cleanedVariations = productData.productVariations.map((v) => {
-    //   const cleaned = { productSize: v.productSize };
-    //   if (v.regularPrice) cleaned.regularPrice = v.regularPrice;
-    //   if (v.salePrice) cleaned.salePrice = v.salePrice;
-    //   if (v.discount) cleaned.discount = v.discount;
-    //   return cleaned;
-    // });
- 
-    formData.append("sku", productData.sku);
-    formData.append("quantity", productData.quantity);
-
-    // Append each image file
-    productData.images?.forEach((img) => {
-      formData.append("image", img.file); // Assuming you have img.file as the File object
-    });
-    
+    // Handle variations
     formData.append(
       "hasVariations",
       productData.hasVariations && productData.productVariations?.length > 0
         ? "true"
         : "false"
     );
-    
-      if (
+    if (
       productData.hasVariations &&
       productData.productVariations?.length > 0
     ) {
@@ -175,30 +155,40 @@ export const updateProduct = createAsyncThunk(
         "variations",
         JSON.stringify(productData.productVariations)
       );
-      
     } else {
       formData.append("variations", "[]");
     }
- 
-    
+    // Handle images
+    if (productData.images && Array.isArray(productData.images)) {
+      // Handle new image uploads
+      productData.images.forEach((img, index) => {
+        if (img.file && !img.isExisting) {
+          formData.append(`image`, img.file);
+        }
+      });
+      // Handle existing images paths
+      const existingImages = productData.images
+        .filter((img) => img.isExisting)
+        .map((img) => img.path);
+      if (existingImages.length > 0) {
+        formData.append("existingImages", JSON.stringify(existingImages));
+      }
+    }
     console.log("Final Payload:", formData);
-    
     const response = await axios.put(
-      `https://dev.crystovajewels.com/api/v1/product/update/${productData.id}`, // Dynamic ID in URL
+      `https://dev.crystovajewels.com/api/v1/product/update/${productData.id}`,
       formData,
       {
-        ...product,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+        },
       }
     );
-    console.log('response', response)
-
     const data = await response.data;
-
     return data;
   }
 );
-
 const productSlice = createSlice({
   name: "eCommerceApp/product",
   initialState: null,
@@ -236,39 +226,39 @@ const productSlice = createSlice({
     // [getProduct.fulfilled]: (state, action) => action.payload,
     [getProduct.fulfilled]: (state, action) => {
       const payload = action.payload;
-    
       console.log("Fetched Product:", payload);
-    
       // Normalize productSize
       if (
         payload?.productSize?.length === 1 &&
         typeof payload.productSize[0] === "string" &&
         payload.productSize[0].includes(",")
       ) {
-        payload.productSize = payload.productSize[0].split(",").map((s) => s.trim());
+        payload.productSize = payload.productSize[0]
+          .split(",")
+          .map((s) => s.trim());
       }
-    
       if (payload?.variations?.length) {
-        payload.productVariations = payload.variations?.map((variation) => ({
-          ...variation,
-          regularPrice: variation?.regularPrice?.$numberDecimal ?? variation?.regularPrice ?? "",
-          salePrice: variation?.salePrice?.$numberDecimal ?? variation?.salePrice ?? "",
-          discount: variation?.discount?.$numberDecimal ?? variation?.discount ?? "",
-        })) ?? [];
-        
-
-       
+        payload.productVariations =
+          payload.variations?.map((variation) => ({
+            ...variation,
+            regularPrice:
+              variation?.regularPrice?.$numberDecimal ??
+              variation?.regularPrice ??
+              "",
+            salePrice:
+              variation?.salePrice?.$numberDecimal ??
+              variation?.salePrice ??
+              "",
+            discount:
+              variation?.discount?.$numberDecimal ?? variation?.discount ?? "",
+          })) ?? [];
       }
       return payload;
-    }
-,
-
+    },
     [saveProduct.fulfilled]: (state, action) => action.payload,
     [removeProduct.fulfilled]: (state, action) => null,
   },
 });
-
 export const { newProduct, resetProduct, setSelectedProduct } =
   productSlice.actions;
-
 export default productSlice.reducer;

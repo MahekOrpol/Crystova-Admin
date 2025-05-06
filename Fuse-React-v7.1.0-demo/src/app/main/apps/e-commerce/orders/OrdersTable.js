@@ -209,11 +209,11 @@ function OrdersTable(props) {
                     {n?.userId?.name}
                     </TableCell>
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+                    <TableCell className="p-4 md:p-16" component="th" scope="row" >
                       <span>₹</span>
                       {n?.totalPrice?.$numberDecimal}
                     </TableCell>
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+                    <TableCell className="p-4 md:p-16" component="th" scope="row" >
                       {n?.discountTotal?.$numberDecimal}
                       <span>%</span>
                     </TableCell>

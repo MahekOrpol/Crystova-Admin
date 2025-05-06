@@ -5,7 +5,6 @@ import clsx from "clsx";
 import FuseUtils from "@fuse/utils";
 import { Controller, useFormContext } from "react-hook-form";
 import { useEffect } from "react";
-
 const Root = styled("div")(({ theme }) => ({
   "& .productImageFeaturedStar": {
     position: "absolute",
@@ -14,13 +13,11 @@ const Root = styled("div")(({ theme }) => ({
     color: orange[400],
     opacity: 0,
   },
-
   "& .productImageUpload": {
     transitionProperty: "box-shadow",
     transitionDuration: theme.transitions.duration.short,
     transitionTimingFunction: theme.transitions.easing.easeInOut,
   },
-
   "& .productImageItem": {
     transitionProperty: "box-shadow",
     transitionDuration: theme.transitions.duration.short,
@@ -41,121 +38,110 @@ const Root = styled("div")(({ theme }) => ({
       },
     },
   },
+  "& .mediaTypeLabel": {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    color: "white",
+    padding: "2px 8px",
+    borderRadius: 4,
+    fontSize: 12,
+  },
 }));
-
 function ProductImagesTab({ product }) {
   const methods = useFormContext();
   const { control, watch, setValue } = methods;
-
-  // const productImages = product?.image || [];
-  const productImages =
-    Array.isArray(product?.image) && product.image.length > 0
-      ? product.image
-      : [];
-
   useEffect(() => {
-    console.log("product.image:", product?.image); // Debugging
-    if (Array.isArray(product?.image) && product.image.length > 0) {
-      const formattedImages = product.image.map((img, index) => ({
-        id: index.toString(),
-        url: `https://dev.crystovajewels.com${img}`,
-        file: null,
-        type: "image",
-      }));
-
-      setValue("images", formattedImages, {
-        shouldValidate: true,
-        shouldDirty: true,
-      });
-      console.log("Formatted Images:", formattedImages); // Debugging
-    } else {
-      setValue("images", []); // 👈 Ensures images is never undefined
+    if (product) {
+      // Format existing images from the server
+      const existingImages = Array.isArray(product.image)
+        ? product.image.map((img, index) => ({
+            id: `existing-${index}`,
+            url: `https://dev.crystovajewels.com${img}`,
+            type: 'image',
+            isExisting: true,
+            path: img
+          }))
+        : [];
+      setValue("images", existingImages);
     }
-  }, [product?.image, setValue]);
-
-  const images = watch("images") || watch("image") || [];
-  console.log(images);
+  }, [product, setValue]);
+  const images = watch("images") || [];
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    const newImages = await Promise.all(
+      files.map(async (file) => {
+        return {
+          id: FuseUtils.generateGUID(),
+          url: URL.createObjectURL(file),
+          file: file, // Keep the actual file object
+          type: 'image',
+          isExisting: false,
+          name: file.name // Add file name for reference
+        };
+      })
+    );
+    return newImages;
+  };
+  const handleRemoveImage = (imageToRemove, onChange, currentImages) => {
+    const filteredImages = currentImages.filter(image => image.id !== imageToRemove.id);
+    onChange(filteredImages);
+  };
   return (
     <Root>
       <div className="flex justify-center sm:justify-start flex-wrap -mx-16">
         <Controller
           name="images"
           control={control}
+          defaultValue={[]}
           render={({ field: { onChange, value } }) => (
-            <label
-              htmlFor="button-file"
-              className="productImageUpload flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer shadow hover:shadow-lg"
-            >
-              <input
-                accept="image/*"
-                className="hidden"
-                id="button-file"
-                type="file"
-                onChange={async (e) => {
-                  function readFileAsync() {
-                    return new Promise((resolve, reject) => {
-                      const file = e.target.files[0];
-                      if (!file) {
-                        return;
-                      }
-                      const reader = new FileReader();
-
-                      reader.onload = () => {
-                        resolve({
-                          id: FuseUtils.generateGUID(),
-                          url: URL.createObjectURL(file),
-                          file: file,
-                          type: "image",
-                        });
-                      };
-
-                      reader.onerror = reject;
-
-                      reader.readAsDataURL(file);
-                    });
-                  }
-
-                  const newImage = await readFileAsync();
-
-                  onChange([newImage, ...(value || [])]);
-                }}
-              />
-              <Icon fontSize="large" color="action">
-                cloud_upload
-              </Icon>
-            </label>
-          )}
-        />
-        <Controller
-          name="featuredImageId"
-          control={control}
-          defaultValue=""
-          render={({ field: { onChange, value } }) =>
-            images.map((media) => (
-              <div
-                onClick={() => onChange(media.id)}
-                onKeyDown={() => onChange(media.id)}
-                role="button"
-                tabIndex={0}
-                className={clsx(
-                  "productImageItem flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer outline-none shadow hover:shadow-lg",
-                  media.id === value && "featured"
-                )}
-                key={media.id}
+            <>
+              <label
+                htmlFor="button-file"
+                className="productImageUpload flex items-center justify-center relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden cursor-pointer shadow hover:shadow-lg"
               >
-                <Icon className="productImageFeaturedStar">star</Icon>
-                <img
-                  className="max-w-none w-auto h-full"
-                  src={typeof media === "string" ? media : media.url}
-                  alt="product"
+                <input
+                  accept="image/*"
+                  className="hidden"
+                  id="button-file"
+                  type="file"
+                  multiple // Allow multiple file selection
+                  onChange={async (e) => {
+                    const newImages = await handleImageUpload(e);
+                    onChange([...(value || []), ...newImages]);
+                  }}
                 />
+                <div className="flex flex-col items-center justify-center">
+                  <Icon fontSize="large" color="action">cloud_upload</Icon>
+                  <span className="mt-4">Upload Images</span>
+                </div>
+              </label>
+              <div className="flex flex-wrap">
+                {value && value.map((img, index) => (
+                  <div
+                    key={img.id}
+                    className="relative w-128 h-128 rounded-16 mx-12 mb-24 overflow-hidden shadow hover:shadow-lg"
+                  >
+                    <img
+                      className="w-full h-full object-cover"
+                      src={img.url}
+                      alt={`Product ${index + 1}`}
+                    />
+                    <div
+                      className="absolute top-0 right-0 p-8 cursor-pointer"
+                      onClick={() => handleRemoveImage(img, onChange, value)}
+                    >
+                      <Icon className="text-red-600">delete</Icon>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))
-          }
+            </>
+          )}
         />
       </div>
     </Root>
   );
 }
-
 export default ProductImagesTab;
