@@ -223,8 +223,7 @@ function OrdersTable(props) {
                     </TableCell>
 
                     <TableCell className="p-4 md:p-16" component="th" scope="row">
-                    <OrdersStatus status={statusMap[n?.status] } />
-
+                    <OrdersStatus status={statusMap[n?.status]} orderId={n?.orderId} />
                     </TableCell>
                   </TableRow>
                 );

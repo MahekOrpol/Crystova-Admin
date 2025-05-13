@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const getOrder = createAsyncThunk('eCommerceApp/order/getOrder', async ({orderId}) => {
-if(!orderId) throw new Error('Ordxer Id is missing!');
+if(!orderId) throw new Error('Order Id is missing!');
   
   const response = await axios.get(`https://dev.crystovajewels.com/api/v1/order/get-single/${orderId}`);
 
