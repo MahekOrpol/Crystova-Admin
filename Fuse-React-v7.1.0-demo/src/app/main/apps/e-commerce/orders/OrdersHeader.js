@@ -8,13 +8,54 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectMainTheme } from 'app/store/fuse/settingsSlice';
 import { setOrdersSearchText } from '../store/ordersSlice';
 import { Button } from '@mui/material';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 function OrdersHeader(props) {
   const dispatch = useDispatch();
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
   const mainTheme = useSelector(selectMainTheme);
+  const orders = useSelector(({ eCommerceApp }) => eCommerceApp.orders.entities);
 
-  
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(16);
+    doc.text('Orders Report', 14, 15);
+    
+    // Prepare table data
+    const tableData = Object.values(orders).map(order => [
+      order.orderId,
+      order.userId.name,
+      order.userId.email,
+      order.userId.phone,
+      order.totalPrice.$numberDecimal,
+      order.status,
+      order.paymentStatus,
+      new Date(order.createdAt).toLocaleDateString()
+    ]);
+
+    // Generate table
+    autoTable(doc, {
+      head: [['Order ID', 'Customer Name', 'Email', 'Phone', 'Total Price', 'Status', 'Payment Status', 'Date']],
+      body: tableData,
+      startY: 25,
+      theme: 'grid',
+      styles: {
+        fontSize: 8,
+        cellPadding: 2
+      },
+      headStyles: {
+        fillColor: [41, 128, 185],
+        textColor: 255
+      }
+    });
+
+    // Save the PDF
+    doc.save('orders-report.pdf');
+  };
+
   return (
     <div className="flex flex-1 w-full items-center justify-between">
       <div className="flex items-center">
@@ -62,7 +103,12 @@ function OrdersHeader(props) {
         </ThemeProvider>
       </div>
       <div>
-        <Button className='text-white border border-solid '>Download All</Button>
+        <Button 
+          className='text-white border border-solid'
+          onClick={handleDownloadPDF}
+        >
+          Download All
+        </Button>
       </div>
     </div>
   );
