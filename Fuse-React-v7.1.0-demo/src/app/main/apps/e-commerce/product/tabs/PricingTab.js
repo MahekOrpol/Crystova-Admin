@@ -31,7 +31,7 @@ function PricingTab({product}) {
             label="Regular Price"
             id="priceTaxIncl"
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: <InputAdornment position="start">₹</InputAdornment>,
             }}
             type="number"
             variant="outlined"
@@ -50,7 +50,7 @@ function PricingTab({product}) {
             label="Sale Price"
             id="salePriceTaxIncl"
             InputProps={{
-              startAdornment: <InputAdornment position="start">$</InputAdornment>,
+              startAdornment: <InputAdornment position="start">₹</InputAdornment>,
             }}
             type="number"
             variant="outlined"

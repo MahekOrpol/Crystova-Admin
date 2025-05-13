@@ -11,9 +11,7 @@ export const getProduct = createAsyncThunk(
     const response = await axios.get(
       `https://dev.crystovajewels.com/api/v1/product/getSingleProduct/${productId}`
     );
-    var regularPrice =response.data.regularPrice.$numberDecimal;
-    var salePrice =response.data.salePrice.$numberDecimal;
-    var discount =response.data.discount.$numberDecimal;
+  
     return response.data || null;
   }
 );

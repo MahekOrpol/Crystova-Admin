@@ -7,12 +7,14 @@ import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMainTheme } from 'app/store/fuse/settingsSlice';
 import { setOrdersSearchText } from '../store/ordersSlice';
+import { Button } from '@mui/material';
 
 function OrdersHeader(props) {
   const dispatch = useDispatch();
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
   const mainTheme = useSelector(selectMainTheme);
 
+  
   return (
     <div className="flex flex-1 w-full items-center justify-between">
       <div className="flex items-center">
@@ -58,6 +60,9 @@ function OrdersHeader(props) {
             />
           </Paper>
         </ThemeProvider>
+      </div>
+      <div>
+        <Button className='text-white border border-solid '>Download All</Button>
       </div>
     </div>
   );
