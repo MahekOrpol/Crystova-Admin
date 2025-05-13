@@ -55,19 +55,21 @@ const InvoiceTab = (props) => {
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
     minimumFractionDigits: 2,
   });
-
 
   const calculateSubtotal = () => {
     return props?.order?.data?.orderDetails.reduce((total, product) => {
       const price = parseFloat(product?.productPrice?.$numberDecimal || 0);
-      const quantity = parseInt(props?.order?.data?.order?.selectedqty || 0, 10);
-      return total + (price * quantity);
+      const quantity = parseInt(
+        props?.order?.data?.order?.selectedqty || 0,
+        10
+      );
+      return total + price * quantity;
     }, 0);
   };
-  
+
   return (
     <div>
       {/* <FormControl fullWidth>
@@ -166,7 +168,7 @@ const InvoiceTab = (props) => {
                     <Typography color="inherit">Crystova Jewels</Typography>
 
                     <Typography color="inherit">
-                      2B-714 IT Park, Opp. AR Mall, Mota Varachha, Surat -
+                      B-714 IT Park, Opp. AR Mall, Mota Varachha, Surat -
                       394101
                     </Typography>
                     <Typography color="inherit">+ 72650 77755</Typography>
@@ -174,7 +176,7 @@ const InvoiceTab = (props) => {
                       info@crystovajewels.com{" "}
                     </Typography>
                     <Typography color="inherit">
-                      crystovajewels.cloudbusiness.cloud
+                      crystovajewels.com
                     </Typography>
                   </div>
                 </div>
@@ -241,8 +243,7 @@ const InvoiceTab = (props) => {
                           {/* {formatter.format(props.order.subtotal)} */}
                           {formatter.format(calculateSubtotal())}
 
-
-                        {  console.log('object :>> ',  props?.order?.data )}
+                          {console.log("object :>> ", props?.order?.data)}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -314,36 +315,6 @@ const InvoiceTab = (props) => {
                     </TableRow>
                   </TableBody>
                 </Table>
-              </div>
-
-              <div className="mt-96">
-                <Typography className="mb-24 print:mb-12" variant="body1">
-                  Please pay within 15 days. Thank you for your business.
-                </Typography>
-
-                <div className="flex">
-                  <div className="shrink-0">
-                    <img
-                      className="w-32"
-                      src="assets/images/logos/fuse.svg"
-                      alt="logo"
-                    />
-                  </div>
-
-                  <Typography
-                    className="font-normal mb-64 px-24"
-                    variant="caption"
-                    color="textSecondary"
-                  >
-                    In condimentum malesuada efficitur. Mauris volutpat placerat
-                    auctor. Ut ac congue dolor. Quisque scelerisque lacus sed
-                    feugiat fermentum. Cras aliquet facilisis pellentesque. Nunc
-                    hendrerit quam at leo commodo, a suscipit tellus dapibus.
-                    Etiam at felis volutpat est mollis lacinia. Mauris placerat
-                    sem sit amet velit mollis, in porttitor ex finibus. Proin eu
-                    nibh id libero tincidunt lacinia et eget eros.
-                  </Typography>
-                </div>
               </div>
             </CardContent>
           </Card>
