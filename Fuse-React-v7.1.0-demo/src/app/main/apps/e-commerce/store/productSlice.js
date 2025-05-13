@@ -11,6 +11,9 @@ export const getProduct = createAsyncThunk(
     const response = await axios.get(
       `https://dev.crystovajewels.com/api/v1/product/getSingleProduct/${productId}`
     );
+    var regularPrice =response.data.regularPrice.$numberDecimal;
+    var salePrice =response.data.salePrice.$numberDecimal;
+    var discount =response.data.discount.$numberDecimal;
     return response.data || null;
   }
 );
@@ -120,11 +123,12 @@ export const updateProduct = createAsyncThunk(
     );
     formData.append("productName", productData.productName);
     formData.append("productsDescription", productData.productsDescription);
-    formData.append("regularPrice", productData.priceTaxIncl);
-    formData.append("salePrice", productData.salePriceTaxIncl);
+    formData.append("regularPrice", productData.priceTaxIncl || productData.regularPrice?.$numberDecimal);
+    formData.append("salePrice", productData.salePriceTaxIncl || productData.salePrice?.$numberDecimal);
+    formData.append("discount", productData.disRate || productData.discount?.$numberDecimal);
+    
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
-    formData.append("discount", productData.disRate);
     formData.append(
       "best_selling",
       productData.bestSelling === "1" ? "1" : "0"
@@ -137,8 +141,8 @@ export const updateProduct = createAsyncThunk(
       Array.isArray(productData.productSize)
         ? productData.productSize.length > 0
           ? productData.productSize.join(",")
-          : "[]"
-        : productData.productSize || "[]"
+          : "Size is not Available"
+        : productData.productSize || "Size is not Available"
     );
     // Handle variations
     formData.append(
@@ -186,6 +190,7 @@ export const updateProduct = createAsyncThunk(
       }
     );
     const data = await response.data;
+    console.log('response :>> ', data);
     return data;
   }
 );
