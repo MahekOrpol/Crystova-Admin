@@ -324,14 +324,6 @@ function OrdersStatus({ status, orderId }) {
             <p><strong>Email:</strong> ${order.userId.email}</p>
             <p><strong>Phone:</strong> ${order.userId.phone}</p>
           </div>
-
-          <div class="shipping-box">
-            <h3>Payment Information</h3>
-            <p><strong>Transaction ID:</strong> ${payment.transactionId || ""}</p>
-            <p><strong>Method:</strong> ${payment.method || ""}</p>
-            <p><strong>Amount:</strong> Rs. ${payment.amount || ""}</p>
-            <p><strong>Date:</strong> ${payment.date ? new Date(payment.date).toLocaleString() : ""}</p>
-          </div>
   
           <h3>Items to Pack</h3>
           <table>
