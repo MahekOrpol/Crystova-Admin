@@ -85,7 +85,6 @@ const InvoiceTab = (props) => {
                 <MenuItem value={20}>Twenty</MenuItem>
               </Select>
             </FormControl> */}
-      <Button>Print</Button>
       <Root className="grow shrink-0 p-0">
         {props.order && (
           <Card className="w-xl mx-auto shadow-0">
