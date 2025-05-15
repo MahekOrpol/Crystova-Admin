@@ -7,7 +7,15 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { selectMainTheme } from "app/store/fuse/settingsSlice";
 import { setOrdersSearchText } from "../store/ordersSlice";
-import { Button, Divider, Menu, MenuItem } from "@mui/material";
+import {
+  Button,
+  Divider,
+  FormControl,
+  InputLabel,
+  Menu,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useState } from "react";
@@ -17,6 +25,11 @@ function OrdersHeader(props) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [selectedFilter, setSelectedFilter] = useState('Today');
+
+  const handleChange = (event) => {
+    setSelectedFilter(event.target.value);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -24,7 +37,10 @@ function OrdersHeader(props) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleFilterSelect = (filter) => {
+    setSelectedFilter(filter);
+    setAnchorEl(null);
+  };
   const searchText = useSelector(
     ({ eCommerceApp }) => eCommerceApp.orders.searchText
   );
@@ -32,7 +48,7 @@ function OrdersHeader(props) {
   const orders = useSelector(
     ({ eCommerceApp }) => eCommerceApp.orders.entities
   );
-
+  
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
 
@@ -41,7 +57,7 @@ function OrdersHeader(props) {
     doc.text("Orders Report", 14, 15);
 
     // Prepare table data
-    const tableData = Object.values(orders).map((order) => [
+    const tableData = filteredOrders.map((order) => [
       order.orderId,
       order.userId.name,
       order.userId.email,
@@ -131,74 +147,43 @@ function OrdersHeader(props) {
           </ThemeProvider>
         </div>
         <div className="flex items-center justify-end" style={{ gap: "10px" }}>
-          <div
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleClick(e);
-            }}
-            className="text-white border border-solid w-128 p-12 rounded border-gray-200 flex justify-between items-center cursor-pointer"
-            size="small"
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            Filter <FaFilter />
-          </div>
-          <div className="text-white border border-solid w-128 p-4 rounded border-gray-200">
+        <FormControl fullWidth >
+        {/* <InputLabel  className="flex justify-between items-center cursor-pointer text-white">
+          Filter <FaFilter />
+        </InputLabel> */}
+        <Select
+          value={selectedFilter}
+          onChange={handleChange}
+          className="border" // Tailwind fallback if needed
+          sx={{
+            color: 'white',
+            '& .MuiSelect-select': {
+              padding: '12px', 
+              width: '70px',
+            },
+            '& fieldset': {
+              border: 'none',
+            },
+            '&:hover fieldset': {
+              border: 'none',
+            },
+            
+          }}
+        >
+          <MenuItem value="Today">Today</MenuItem>
+          <MenuItem value="Yesterday">Yesterday</MenuItem>
+          <MenuItem value="Last Week">Last Week</MenuItem>
+          <MenuItem value="Last Month">Last Month</MenuItem>
+          <MenuItem value="This Year">This Year</MenuItem>
+        </Select>
+      </FormControl>
+          <div className="text-white border border-solid w-224 p-4 rounded border-gray-200">
             <Button className="text-white" onClick={handleDownloadPDF}>
               Download All
             </Button>
           </div>
         </div>
       </div>
-      <Menu
-        anchorEl={anchorEl}
-        id="account-menu"
-        open={open}
-        onClose={handleClose}
-        onClick={handleClose}
-        slotProps={{
-          paper: {
-            elevation: 0,
-            sx: {
-              overflow: "visible",
-              filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-              mt: 1.5,
-              "& .MuiAvatar-root": {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              "&::before": {
-                content: '""',
-                display: "block",
-                position: "absolute",
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: "background.paper",
-                transform: "translateY(-50%) rotate(45deg)",
-                zIndex: 0,
-              },
-            },
-          },
-        }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem>Today</MenuItem>
-        <Divider />
-        <MenuItem> Yesterday </MenuItem>
-        <Divider />
-        <MenuItem> Last Week </MenuItem>
-        <Divider />
-        <MenuItem> Last Month </MenuItem>
-        <Divider />
-        <MenuItem> This Year </MenuItem>
-      </Menu>
     </>
   );
 }
