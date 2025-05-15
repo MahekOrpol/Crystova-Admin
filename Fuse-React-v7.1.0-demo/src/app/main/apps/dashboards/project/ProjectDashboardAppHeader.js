@@ -71,7 +71,7 @@ function ProjectDashboardAppHeader(props) {
           )}
           <div className="mx-12 min-w-0">
             <Typography className="text-18 sm:text-24 md:text-32 font-bold leading-none mb-8 tracking-tight">
-              Welcome back, {user.data.displayName}!
+              Welcome back, {localStorage.getItem('userName')}!
             </Typography>
 
             <div className="flex items-center opacity-60 truncate">

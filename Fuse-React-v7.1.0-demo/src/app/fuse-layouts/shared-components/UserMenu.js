@@ -121,6 +121,7 @@ function UserMenu(props) {
                   localStorage.removeItem("adminToken");
                   dispatch(logoutUser());
                   userMenuClose();
+                  navigate("/login");
                 }}
                 role="button"
               >
