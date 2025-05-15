@@ -25,7 +25,7 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 }));
 
 function Orders() {
-  const [selectedFilter, setSelectedFilter] = useState('Today');
+  const [selectedFilter, setSelectedFilter] = useState('All');
   return <Root header={<OrdersHeader selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />} content={<OrdersTable selectedFilter={selectedFilter}  />} innerScroll />;
 }
 

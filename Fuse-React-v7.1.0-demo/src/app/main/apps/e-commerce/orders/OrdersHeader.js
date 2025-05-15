@@ -25,29 +25,20 @@ function OrdersHeader({ selectedFilter, setSelectedFilter }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  // const [selectedFilter, setSelectedFilter] = useState('Today');
 
   const handleChange = (event) => {
     setSelectedFilter(event.target.value);
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleFilterSelect = (filter) => {
-    setSelectedFilter(filter);
-    setAnchorEl(null);
-  };
+
   const searchText = useSelector(
     ({ eCommerceApp }) => eCommerceApp.orders.searchText
   );
   const mainTheme = useSelector(selectMainTheme);
+
   const orders = useSelector(
-    ({ eCommerceApp }) => eCommerceApp.orders.entities
-  );
+    ({ eCommerceApp }) => Object.values(eCommerceApp.orders.entities || {})
+  );  
 
   const handleDownloadPDF = () => {
     const filteredOrders = filterOrdersByDate(orders, selectedFilter); // ← fix here
@@ -61,10 +52,10 @@ function OrdersHeader({ selectedFilter, setSelectedFilter }) {
     // Prepare table data
     const tableData = filteredOrders.map((order) => [
       order.orderId,
-      order.userId.name,
-      order.userId.email,
-      order.userId.phone,
-      order.totalPrice.$numberDecimal,
+      order.userId?.name || "-",
+      order.userId?.email || "-",
+      order.userId?.phone || "-",
+      order.totalPrice?.$numberDecimal || "-",
       order.status,
       order.paymentStatus,
       new Date(order.createdAt).toLocaleDateString(),
@@ -201,6 +192,7 @@ function OrdersHeader({ selectedFilter, setSelectedFilter }) {
                 },
               }}
             >
+              <MenuItem value="All">All</MenuItem>
               <MenuItem value="Today">Today</MenuItem>
               <MenuItem value="Yesterday">Yesterday</MenuItem>
               <MenuItem value="Last Week">Last Week</MenuItem>
