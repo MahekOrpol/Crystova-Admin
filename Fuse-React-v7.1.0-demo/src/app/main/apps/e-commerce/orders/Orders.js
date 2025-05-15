@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import reducer from '../store';
 import OrdersHeader from './OrdersHeader';
 import OrdersTable from './OrdersTable';
+import { useState } from 'react';
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   '& .FusePageCarded-header': {
@@ -24,7 +25,8 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 }));
 
 function Orders() {
-  return <Root header={<OrdersHeader />} content={<OrdersTable />} innerScroll />;
+  const [selectedFilter, setSelectedFilter] = useState('Today');
+  return <Root header={<OrdersHeader selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />} content={<OrdersTable selectedFilter={selectedFilter}  />} innerScroll />;
 }
 
 export default withReducer('eCommerceApp', reducer)(Orders);

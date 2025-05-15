@@ -17,11 +17,10 @@ import OrdersStatus from '../order/OrdersStatus';
 import { selectOrders, getOrders } from '../store/ordersSlice';
 import OrdersTableHead from './OrdersTableHead';
 
-function OrdersTable(props) {
+function OrdersTable({selectedFilter}) {
   const dispatch = useDispatch();
   const orders = useSelector(selectOrders);
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.orders.searchText);
-
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState(orders);
@@ -59,6 +58,21 @@ function OrdersTable(props) {
     });
   }
 
+  useEffect(() => {
+    let filteredData = orders;
+
+    if (searchText.length !== 0) {
+      filteredData = FuseUtils.filterArrayByString(orders, searchText);
+    }
+
+    if (selectedFilter) {
+      filteredData = filterOrdersByDate(filteredData, selectedFilter);
+    }
+
+    setData(filteredData);
+    setPage(0);
+  }, [orders, searchText, selectedFilter]);
+  
   const statusMap = {
     pending: { name: 'Pending', color: 'orange' },
     shipped: { name: 'Shipped', color: 'blue' },
@@ -115,6 +129,39 @@ function OrdersTable(props) {
     return <FuseLoading />;
   }
 
+  function filterOrdersByDate(orders, filterType) {
+    const today = new Date();
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+    const startOfYesterday = new Date(startOfToday);
+    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+    const startOfLastWeek = new Date(startOfToday);
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+    const startOfLastMonth = new Date(startOfToday);
+    startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+  
+    return orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      switch (filterType) {
+        case 'Today':
+          return orderDate >= startOfToday;
+        case 'Yesterday':
+          return (
+            orderDate >= startOfYesterday && orderDate < startOfToday
+          );
+        case 'Last Week':
+          return orderDate >= startOfLastWeek;
+        case 'Last Month':
+          return orderDate >= startOfLastMonth;
+        case 'This Year':
+          return orderDate >= startOfYear;
+        default:
+          return true;
+      }
+    });
+  }
+
+  
   if (data.length === 0) {
     return (
       <motion.div

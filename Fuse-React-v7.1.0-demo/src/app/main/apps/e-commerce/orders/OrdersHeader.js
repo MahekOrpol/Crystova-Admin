@@ -21,11 +21,11 @@ import autoTable from "jspdf-autotable";
 import { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 
-function OrdersHeader(props) {
+function OrdersHeader({ selectedFilter, setSelectedFilter }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [selectedFilter, setSelectedFilter] = useState('Today');
+  // const [selectedFilter, setSelectedFilter] = useState('Today');
 
   const handleChange = (event) => {
     setSelectedFilter(event.target.value);
@@ -48,8 +48,10 @@ function OrdersHeader(props) {
   const orders = useSelector(
     ({ eCommerceApp }) => eCommerceApp.orders.entities
   );
-  
+
   const handleDownloadPDF = () => {
+    const filteredOrders = filterOrdersByDate(orders, selectedFilter); // ← fix here
+
     const doc = new jsPDF();
 
     // Add title
@@ -97,6 +99,36 @@ function OrdersHeader(props) {
 
     // Save the PDF
     doc.save("orders-report.pdf");
+  };
+
+  const filterOrdersByDate = (orders, filterType) => {
+    const today = new Date();
+    const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+    const startOfYesterday = new Date(startOfToday);
+    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+    const startOfLastWeek = new Date(startOfToday);
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+    const startOfLastMonth = new Date(startOfToday);
+    startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+
+    return orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      switch (filterType) {
+        case "Today":
+          return orderDate >= startOfToday;
+        case "Yesterday":
+          return orderDate >= startOfYesterday && orderDate < startOfToday;
+        case "Last Week":
+          return orderDate >= startOfLastWeek;
+        case "Last Month":
+          return orderDate >= startOfLastMonth;
+        case "This Year":
+          return orderDate >= startOfYear;
+        default:
+          return true;
+      }
+    });
   };
 
   return (
@@ -147,36 +179,35 @@ function OrdersHeader(props) {
           </ThemeProvider>
         </div>
         <div className="flex items-center justify-end" style={{ gap: "10px" }}>
-        <FormControl fullWidth >
-        {/* <InputLabel  className="flex justify-between items-center cursor-pointer text-white">
+          <FormControl fullWidth>
+            {/* <InputLabel  className="flex justify-between items-center cursor-pointer text-white">
           Filter <FaFilter />
         </InputLabel> */}
-        <Select
-          value={selectedFilter}
-          onChange={handleChange}
-          className="border" // Tailwind fallback if needed
-          sx={{
-            color: 'white',
-            '& .MuiSelect-select': {
-              padding: '12px', 
-              width: '70px',
-            },
-            '& fieldset': {
-              border: 'none',
-            },
-            '&:hover fieldset': {
-              border: 'none',
-            },
-            
-          }}
-        >
-          <MenuItem value="Today">Today</MenuItem>
-          <MenuItem value="Yesterday">Yesterday</MenuItem>
-          <MenuItem value="Last Week">Last Week</MenuItem>
-          <MenuItem value="Last Month">Last Month</MenuItem>
-          <MenuItem value="This Year">This Year</MenuItem>
-        </Select>
-      </FormControl>
+            <Select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+              className="border" // Tailwind fallback if needed
+              sx={{
+                color: "white",
+                "& .MuiSelect-select": {
+                  padding: "12px",
+                  width: "70px",
+                },
+                "& fieldset": {
+                  border: "none",
+                },
+                "&:hover fieldset": {
+                  border: "none",
+                },
+              }}
+            >
+              <MenuItem value="Today">Today</MenuItem>
+              <MenuItem value="Yesterday">Yesterday</MenuItem>
+              <MenuItem value="Last Week">Last Week</MenuItem>
+              <MenuItem value="Last Month">Last Month</MenuItem>
+              <MenuItem value="This Year">This Year</MenuItem>
+            </Select>
+          </FormControl>
           <div className="text-white border border-solid w-224 p-4 rounded border-gray-200">
             <Button className="text-white" onClick={handleDownloadPDF}>
               Download All
