@@ -74,6 +74,8 @@ class JwtService extends FuseUtils.EventEmitter {
             resolve(response.data.user);
             localStorage.setItem('adminId', response.data.user.id);
             localStorage.setItem('adminToken', response.data.token.access.token);
+            localStorage.setItem('userName', response.data.user.displayName);
+            
             }
           } else {
             reject(response.data.error);
