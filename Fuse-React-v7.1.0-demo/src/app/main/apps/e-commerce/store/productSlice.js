@@ -96,6 +96,13 @@ export const saveProduct = createAsyncThunk(
       "https://dev.crystovajewels.com/api/v1/product/create",
       formData,
       {
+        timeout: 30000, // 60 seconds
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "application/json",
+        },
+      },
+      {
         ...product,
         headers: {
           "Content-Type": "multipart/form-data",
