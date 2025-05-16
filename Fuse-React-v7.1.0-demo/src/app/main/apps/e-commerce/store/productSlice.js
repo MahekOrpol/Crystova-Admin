@@ -41,7 +41,7 @@ export const saveProduct = createAsyncThunk(
     formData.append("salePrice", productData.salePriceTaxIncl);
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
-    formData.append("discount", productData.disRate);
+    formData.append("discount", productData.disRate || 0);
     formData.append(
       "best_selling",
       productData.bestSelling === "1" ? "1" : "0"
@@ -130,7 +130,7 @@ export const updateProduct = createAsyncThunk(
     formData.append("productsDescription", productData.productsDescription);
     formData.append("regularPrice", productData.priceTaxIncl || productData.regularPrice?.$numberDecimal);
     formData.append("salePrice", productData.salePriceTaxIncl || productData.salePrice?.$numberDecimal);
-    formData.append("discount", productData.disRate || productData.discount?.$numberDecimal);
+    formData.append("discount", productData.disRate || productData.discount?.$numberDecimal || 0);
     
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
