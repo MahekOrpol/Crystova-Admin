@@ -41,7 +41,7 @@ export const saveProduct = createAsyncThunk(
     formData.append("salePrice", productData.salePriceTaxIncl);
     formData.append("stock", productData.stock);
     formData.append("gender", productData.gender);
-    formData.append("discount", productData.disRate);
+    formData.append("discount", productData.disRate || 0);
     formData.append(
       "best_selling",
       productData.bestSelling === "1" ? "1" : "0"
